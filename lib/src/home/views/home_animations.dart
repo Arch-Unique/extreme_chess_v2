@@ -1,7 +1,9 @@
 import 'dart:math';
 
+import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
+import 'package:extreme_chess_v2/src/global/model/user.dart';
 import 'package:extreme_chess_v2/src/global/ui/widgets/others/containers.dart';
-import 'package:extreme_chess_v2/src/home/controllers/dashboard_controller.dart';
+import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
 import 'package:extreme_chess_v2/src/home/screens/game_screen.dart';
 import 'package:extreme_chess_v2/src/home/views/base_animations.dart';
 import 'package:extreme_chess_v2/src/home/views/circle_button.dart';
@@ -12,6 +14,7 @@ import 'package:icons_plus/icons_plus.dart';
 
 import '../../global/ui/ui_barrel.dart';
 import '../../src_barrel.dart';
+import 'package:chess/chess.dart' as chess;
 
 class HomeHeader extends StatefulWidget {
   const HomeHeader(this.animation, {super.key});
@@ -48,11 +51,61 @@ class _HomeHeaderState extends State<HomeHeader> {
               ),
               BaseAnimationWidget.u2b(
                 value: widget.animation.value,
-                child: CircleButton.dark(icon: Iconsax.menu),
+                child: CircleButton.dark(icon: Iconsax.menu, onPressed: () {}),
               )
             ],
           );
         });
+  }
+
+  Future _showSettings() async {
+    final controller = Get.find<AppController>();
+
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: AppText.bold("Settings", fontSize: 24),
+            content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppText.medium("Player Color:",
+                      color: AppColors.darkTextColor),
+                  Ui.boxHeight(8),
+                  Row(
+                    children: [
+                      Builder(builder: (context) {
+                        return CurvedContainer(
+                          padding: EdgeInsets.all(24),
+                          child: WhiteKing(),
+                          color: controller.userColor.value == chess.Color.WHITE
+                              ? AppColors.primaryColor
+                              : AppColors.transparent,
+                          onPressed: () {
+                            controller.userColor.value = chess.Color.WHITE;
+                          },
+                        );
+                      }),
+                      Ui.boxWidth(24),
+                      Builder(builder: (context) {
+                        return CurvedContainer(
+                          padding: EdgeInsets.all(24),
+                          color: controller.userColor.value != chess.Color.WHITE
+                              ? AppColors.primaryColor
+                              : AppColors.transparent,
+                          onPressed: () {
+                            controller.userColor.value = chess.Color.BLACK;
+                          },
+                          child: BlackKing(),
+                        );
+                      }),
+                    ],
+                  ),
+                ]));
+      },
+    );
   }
 }
 
@@ -160,7 +213,7 @@ class _HomeActionState extends State<HomeAction>
   }
 
   engineItem(ChessEngines mode) {
-    final controller = Get.find<DashboardController>();
+    final controller = Get.find<AppController>();
     return Ui.padding(
       child: Obx(() {
         return Badge(
@@ -181,7 +234,12 @@ class _HomeActionState extends State<HomeAction>
             padding: const EdgeInsets.all(16.0),
             onPressed: () {
               controller.selectedChessEngine.value = mode;
+              controller.currentOpponent.value =
+                  User(firstName: mode.title, image: mode.icon);
               // setState(() {});
+            },
+            onLongPressed: () {
+              _showEngineInfo(mode);
             },
             color: AppColors.primaryColor.withOpacity(0.025),
             radius: 16,
@@ -204,6 +262,34 @@ class _HomeActionState extends State<HomeAction>
       }),
     );
   }
+
+  Future _showEngineInfo(ChessEngines mode) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: AppText.bold(mode.title),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 120,
+                child: BouncingEngineWidget(
+                  child: Image.asset(
+                    mode.icon,
+                    width: 48,
+                  ),
+                ),
+              ),
+              Ui.boxHeight(8),
+              AppText.thin(mode.desc, color: AppColors.darkTextColor)
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 
 class HomeMenu extends StatefulWidget {
@@ -218,7 +304,7 @@ class _HomeMenuState extends State<HomeMenu>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  final controller = Get.find<DashboardController>();
+  final controller = Get.find<AppController>();
   static const angle = -(pi / 25);
 
   @override
@@ -339,7 +425,9 @@ class _HomeMenuState extends State<HomeMenu>
                     Ui.boxHeight(16),
                     AppButton(
                       onPressed: () {
-                        Get.to(GameScreen());
+                        if (ha.index == 0) {
+                          Get.to(GameScreen());
+                        }
                       },
                       text: ha.btn,
                     )

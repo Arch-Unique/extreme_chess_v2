@@ -14,7 +14,7 @@ class CurvedContainer extends StatefulWidget {
   final Color color;
   final Border? border;
   final bool shouldClip;
-  final VoidCallback? onPressed;
+  final VoidCallback? onPressed, onLongPressed;
   final EdgeInsets? margin, padding;
   const CurvedContainer(
       {this.child,
@@ -22,6 +22,7 @@ class CurvedContainer extends StatefulWidget {
       this.height,
       this.width,
       this.onPressed,
+      this.onLongPressed,
       this.margin,
       this.padding,
       this.border,
@@ -81,6 +82,7 @@ class _CurvedContainerState extends State<CurvedContainer>
         onTapDown: widget.onPressed == null ? null : _handleTapDown,
         onTapUp: widget.onPressed == null ? null : _handleTapUp,
         onTap: widget.onPressed == null ? null : _handleTap,
+        onLongPress: widget.onLongPressed,
         onTapCancel: widget.onPressed == null
             ? null
             : () {

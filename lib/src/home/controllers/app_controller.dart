@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:extreme_chess_v2/src/global/model/user.dart';
 import 'package:extreme_chess_v2/src/src_barrel.dart';
 import 'package:get/get.dart';
 import 'package:stockfish/stockfish.dart';
 
 import '../../plugin/chess_board/flutter_chess_board.dart';
 
-class DashboardController extends GetxController {
+class AppController extends GetxController {
   Rx<HomeActions> currentHomeAction = HomeActions.home.obs;
   Rx<ChessEngines> selectedChessEngine = ChessEngines.easy.obs;
   Rx<ChessEngineState> currentChessState = ChessEngineState.initial.obs;
@@ -15,6 +16,11 @@ class DashboardController extends GetxController {
   RxInt bTime = 0.obs;
   RxInt wTime = 0.obs;
   Rx<Color> userColor = Chess.WHITE.obs;
+  Rx<User> currentOpponent =
+      User(firstName: ChessEngines.easy.title, image: ChessEngines.easy.icon)
+          .obs;
+  Rx<User> currentUser =
+      User(firstName: "Extreme", lastName: "Player", image: "").obs;
 
   RxString get wTimeString => _formatDuration(wTime.value).obs;
   RxString get bTimeString => _formatDuration(bTime.value).obs;
@@ -88,8 +94,12 @@ class DashboardController extends GetxController {
 
   _startCountdown() {
     Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      if (wTime.value == 0 || bTime.value == 0) {
+      if (wTime.value == 0 ||
+          bTime.value == 0 ||
+          chessController.isGameOver()) {
         timer.cancel();
+        currentChessState.value = ChessEngineState.newgame;
+        _startNewGame();
       }
       if (chessController.game.turn == Chess.WHITE) {
         wTime.value = wTime.value - 1000;

@@ -1,6 +1,6 @@
 import 'package:extreme_chess_v2/src/global/controller/connection_controller.dart';
 import 'package:extreme_chess_v2/src/global/services/barrel.dart';
-import 'package:extreme_chess_v2/src/home/controllers/dashboard_controller.dart';
+import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
 import 'package:get/get.dart';
 
 class AppDependency {
@@ -26,7 +26,7 @@ class AppDependency {
 
     // //controllers
     // Get.put(AuthController());
-    Get.put(DashboardController());
+    Get.put(AppController());
     // Get.put(FacilityController());
   }
 }

@@ -1,5 +1,5 @@
 import 'package:extreme_chess_v2/src/global/ui/ui_barrel.dart';
-import 'package:extreme_chess_v2/src/home/controllers/dashboard_controller.dart';
+import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
 import 'package:extreme_chess_v2/src/home/views/home_animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,7 +15,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  final controller = Get.find<DashboardController>();
+  final controller = Get.find<AppController>();
 
   @override
   void initState() {
@@ -45,7 +45,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         child: Column(
           children: [
             Ui.padding(child: HomeHeader(_animation)),
-            Ui.boxHeight(24),
             Expanded(
                 child: Row(
               children: [

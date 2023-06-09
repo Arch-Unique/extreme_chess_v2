@@ -1,5 +1,6 @@
 import 'package:extreme_chess_v2/src/global/services/barrel.dart';
 import 'package:extreme_chess_v2/src/global/ui/widgets/others/containers.dart';
+import 'package:extreme_chess_v2/src/home/views/base_animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:async';
@@ -260,6 +261,49 @@ class _FadeAnimWidgetState extends State<FadeAnimWidget> {
         duration: widget.d,
         builder: (_, x, y) {
           return Opacity(opacity: x, child: widget.child);
+        });
+  }
+}
+
+class BouncingEngineWidget extends StatefulWidget {
+  final Widget child;
+
+  const BouncingEngineWidget({required this.child, Key? key}) : super(key: key);
+
+  @override
+  State<BouncingEngineWidget> createState() => _BouncingEngineWidgetState();
+}
+
+class _BouncingEngineWidgetState extends State<BouncingEngineWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation _animation;
+
+  @override
+  void initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 3));
+    _animation = CurvedAnimation(
+        parent: Tween(begin: 0.0, end: 1.0).animate(_animationController),
+        curve: Curves.elasticOut,
+        reverseCurve: Curves.easeOut);
+    _animationController.repeat(reverse: true);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+        animation: _animation,
+        builder: (_, __) {
+          return BaseAnimationWidget.u2b(
+              value: _animation.value, child: widget.child);
         });
   }
 }

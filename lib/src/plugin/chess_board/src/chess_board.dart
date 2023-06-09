@@ -1,8 +1,12 @@
 import 'dart:math';
 
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
+import 'package:extreme_chess_v2/src/global/ui/ui_barrel.dart';
+import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
+import 'package:extreme_chess_v2/src/src_barrel.dart';
 import 'package:flutter/material.dart';
-import 'package:chess/chess.dart' hide State;
+import 'package:chess/chess.dart' as chess;
+import 'package:get/get.dart';
 import '../../../utils/utils_barrel.dart';
 import 'board_arrow.dart';
 import 'chess_board_controller.dart';
@@ -40,9 +44,12 @@ class ChessBoard extends StatefulWidget {
 }
 
 class _ChessBoardState extends State<ChessBoard> {
+  static final lightSquare = Color(0xFFF3F3F3);
+  static final darkSquare = Color(0xFF3A3A3A);
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Chess>(
+    final w = Ui.width(context) / 8;
+    return ValueListenableBuilder<chess.Chess>(
       valueListenable: widget.controller,
       builder: (context, game, _) {
         return SizedBox(
@@ -50,10 +57,10 @@ class _ChessBoardState extends State<ChessBoard> {
           height: widget.size,
           child: Stack(
             children: [
-              AspectRatio(
-                child: _getBoardImage(),
-                aspectRatio: 1.0,
-              ),
+              // AspectRatio(
+              //   child: _getBoardImage(),
+              //   aspectRatio: 1.0,
+              // ),
               AspectRatio(
                 aspectRatio: 1.0,
                 child: GridView.builder(
@@ -77,17 +84,23 @@ class _ChessBoardState extends State<ChessBoard> {
                       game: game,
                     );
 
-                    var draggable = game.get(squareName) != null
+                    PieceMoveData? moveData = PieceMoveData(
+                      squareName: squareName,
+                      pieceType: pieceOnSquare?.type.toUpperCase() ?? 'P',
+                      pieceColor: pieceOnSquare?.color ?? chess.Color.WHITE,
+                    );
+
+                    var draggable = game.get(squareName) != null &&
+                            game.get(squareName)?.color == game.turn
                         ? Draggable<PieceMoveData>(
                             child: piece,
                             feedback: piece,
                             childWhenDragging: SizedBox(),
-                            data: PieceMoveData(
-                              squareName: squareName,
-                              pieceType:
-                                  pieceOnSquare?.type.toUpperCase() ?? 'P',
-                              pieceColor: pieceOnSquare?.color ?? Color.WHITE,
-                            ),
+                            data: moveData,
+                            onDragStarted: () {
+                              // Clear moveData when dragging starts
+                              moveData = null;
+                            },
                           )
                         : Container();
 
@@ -95,18 +108,21 @@ class _ChessBoardState extends State<ChessBoard> {
                         DragTarget<PieceMoveData>(builder: (context, list, _) {
                       return draggable;
                     }, onWillAccept: (pieceMoveData) {
-                      return widget.enableUserMoves ? true : false;
+                      return pieceOnSquare == null ||
+                          pieceOnSquare.color != game.turn;
                     }, onAccept: (PieceMoveData pieceMoveData) async {
                       // A way to check if move occurred.
-                      Color moveColor = game.turn;
+                      chess.Color moveColor = game.turn;
 
                       if (pieceMoveData.pieceType == "P" &&
                           ((pieceMoveData.squareName[1] == "7" &&
                                   squareName[1] == "8" &&
-                                  pieceMoveData.pieceColor == Color.WHITE) ||
+                                  pieceMoveData.pieceColor ==
+                                      chess.Color.WHITE) ||
                               (pieceMoveData.squareName[1] == "2" &&
                                   squareName[1] == "1" &&
-                                  pieceMoveData.pieceColor == Color.BLACK))) {
+                                  pieceMoveData.pieceColor ==
+                                      chess.Color.BLACK))) {
                         var val = await _promotionDialog(context);
 
                         if (val != null) {
@@ -127,9 +143,34 @@ class _ChessBoardState extends State<ChessBoard> {
                       if (game.turn != moveColor) {
                         widget.onMove?.call();
                       }
+                      if (game.game_over) {
+                        _showGameOver(game);
+                      }
                     });
 
-                    return dragTarget;
+                    return GestureDetector(
+                      onTap: () {
+                        if (moveData == null) {
+                          if (pieceOnSquare != null &&
+                              pieceOnSquare.color == game.turn) {
+                            moveData = PieceMoveData(
+                              squareName: squareName,
+                              pieceType: pieceOnSquare.type.toUpperCase(),
+                              pieceColor: pieceOnSquare.color,
+                            );
+                          }
+                        } else {
+                          // Second tap on the same piece, clear moveData
+                          moveData = null;
+                        }
+                      },
+                      child: Container(
+                        width: w,
+                        height: w,
+                        child: dragTarget,
+                        color: _getSquareColor(row, column),
+                      ),
+                    );
                   },
                   itemCount: 64,
                   shrinkWrap: true,
@@ -162,14 +203,20 @@ class _ChessBoardState extends State<ChessBoard> {
     );
   }
 
+  Color _getSquareColor(int r, int c) {
+    return r.isOdd
+        ? (c.isOdd ? lightSquare : darkSquare)
+        : (c.isOdd ? darkSquare : lightSquare);
+  }
+
   /// Show dialog when pawn reaches last square
   Future<String?> _promotionDialog(BuildContext context) async {
     return showDialog<String>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return new AlertDialog(
-          title: new Text('Choose promotion'),
+        return AlertDialog(
+          title: Text('Choose promotion'),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
@@ -205,11 +252,77 @@ class _ChessBoardState extends State<ChessBoard> {
       return value;
     });
   }
+
+  Future _showGameOver(chess.Chess game) async {
+    final controller = Get.find<AppController>();
+    final winnerIsUser = game.turn != controller.userColor.value;
+    final user = winnerIsUser
+        ? controller.currentUser.value
+        : controller.currentOpponent.value;
+    String msg = "";
+    String title = "";
+    if (game.in_checkmate) {
+      title = "CHECKMATE";
+      if (winnerIsUser) {
+        msg = "Congrats , You won";
+      } else {
+        msg = "${user.fullName} won, Try again next time ";
+      }
+    } else if (game.in_draw) {
+      if (game.in_stalemate) {
+        title = "STALEMATE";
+      } else if (game.in_threefold_repetition) {
+        title = "3 FOLD REPITITION";
+      } else if (game.insufficient_material) {
+        title = "INSUFFICIENT MATERIAL";
+      }
+      msg = "You draw, Nice one";
+    }
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: AppText.bold(title, fontSize: 24),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppText.medium(msg, color: AppColors.darkTextColor),
+              Ui.boxHeight(8),
+              Row(
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        widget.controller.resetBoard();
+                        controller.setTimeForPlayers(widget.controller);
+                        Get.back();
+                      },
+                      icon: Icon(
+                        Icons.restart_alt_rounded,
+                        color: AppColors.darkTextColor,
+                      )),
+                  Ui.boxWidth(24),
+                  IconButton(
+                      onPressed: () {
+                        Get.offAllNamed(AppRoutes.home);
+                      },
+                      icon: Icon(
+                        Icons.home_outlined,
+                        color: AppColors.darkTextColor,
+                      ))
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 
 class BoardPiece extends StatelessWidget {
   final String squareName;
-  final Chess game;
+  final chess.Chess game;
 
   const BoardPiece({
     Key? key,
@@ -226,7 +339,7 @@ class BoardPiece extends StatelessWidget {
       return Container();
     }
 
-    String piece = (square?.color == Color.WHITE ? 'W' : 'B') +
+    String piece = (square?.color == chess.Color.WHITE ? 'W' : 'B') +
         (square?.type.toUpperCase() ?? 'P');
 
     switch (piece) {
@@ -249,22 +362,34 @@ class BoardPiece extends StatelessWidget {
         imageToDisplay = WhiteKing();
         break;
       case "BP":
-        imageToDisplay = BlackPawn();
+        imageToDisplay = BlackPawn(
+          fillColor: Color(0xFFFFD700),
+        );
         break;
       case "BR":
-        imageToDisplay = BlackRook();
+        imageToDisplay = BlackRook(
+          fillColor: Color(0xFFFFD700),
+        );
         break;
       case "BN":
-        imageToDisplay = BlackKnight();
+        imageToDisplay = BlackKnight(
+          fillColor: Color(0xFFFFD700),
+        );
         break;
       case "BB":
-        imageToDisplay = BlackBishop();
+        imageToDisplay = BlackBishop(
+          fillColor: Color(0xFFFFD700),
+        );
         break;
       case "BQ":
-        imageToDisplay = BlackQueen();
+        imageToDisplay = BlackQueen(
+          fillColor: Color(0xFFFFD700),
+        );
         break;
       case "BK":
-        imageToDisplay = BlackKing();
+        imageToDisplay = BlackKing(
+          fillColor: Color(0xFFFFD700),
+        );
         break;
       default:
         imageToDisplay = WhitePawn();
@@ -277,7 +402,7 @@ class BoardPiece extends StatelessWidget {
 class PieceMoveData {
   final String squareName;
   final String pieceType;
-  final Color pieceColor;
+  final chess.Color pieceColor;
 
   PieceMoveData({
     required this.squareName,

@@ -74,13 +74,16 @@ enum HomeActions {
 }
 
 enum ChessEngines {
-  easy("Chaos", Assets.easy, 2750, 300000),
-  medium("Mayhem", Assets.medium, 2900, 180000),
-  hard("Brutal", Assets.hard, 3150, 60000);
+  easy("Chaos", Assets.easy, 2750, 300000,
+      "In the realm where silence weeps and battles brew,\nChaos emerges swift and true.\nWithin five minutes, it paints a tapestry of strife,\nUnleashing mayhem, embodying the essence of life."),
+  medium("Mayhem", Assets.medium, 2900, 180000,
+      "Rising from the depths, a tempest takes its form,\nMayhem, heralds a ferocious storm.\nIn three minutes' time, it dances on the edge,\nA master of chaos, leaving opponents on a ledge."),
+  hard("Brutal", Assets.hard, 3150, 60000,
+      "Behold the epitome of ruthless might,\nBrutal, a warrior cloaked in night.\nIn just one minute, it strikes with a venomous stare,\nA merciless executioner, leaving no room for repair ");
 
-  final String title, icon;
+  final String title, icon, desc;
   final int elo, time;
-  const ChessEngines(this.title, this.icon, this.elo, this.time);
+  const ChessEngines(this.title, this.icon, this.elo, this.time, this.desc);
 }
 
 enum ChessEngineState { initial, uci, setoptions, newgame, ingame }

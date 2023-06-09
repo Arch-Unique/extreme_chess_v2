@@ -1,4 +1,4 @@
-import 'package:extreme_chess_v2/src/home/controllers/dashboard_controller.dart';
+import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
 import 'package:extreme_chess_v2/src/home/screens/dashboard_screen.dart';
 import 'package:extreme_chess_v2/src/src_barrel.dart';
 import 'package:extreme_chess_v2/src/utils/constants/routes/middleware/auth_middleware.dart';

@@ -2,7 +2,7 @@ import 'package:chess/chess.dart' hide State;
 import 'package:extreme_chess_v2/src/global/ui/ui_barrel.dart';
 import 'package:extreme_chess_v2/src/global/ui/widgets/others/containers.dart';
 import 'package:extreme_chess_v2/src/global/ui/widgets/others/others.dart';
-import 'package:extreme_chess_v2/src/home/controllers/dashboard_controller.dart';
+import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
 import 'package:extreme_chess_v2/src/home/views/base_animations.dart';
 import 'package:extreme_chess_v2/src/home/views/header.dart';
 import 'package:extreme_chess_v2/src/src_barrel.dart';
@@ -41,7 +41,7 @@ class GameHeaderProfile extends StatefulWidget {
 }
 
 class _GameHeaderProfileState extends State<GameHeaderProfile> {
-  final controller = Get.find<DashboardController>();
+  final controller = Get.find<AppController>();
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -67,12 +67,25 @@ class _GameHeaderProfileState extends State<GameHeaderProfile> {
           value: widget.animation.value,
           child: Transform.scale(
             scale: widget.animation.value,
-            child: CircleAvatar(),
+            child: widget.isUser
+                ? AppIcon(
+                    Iconsax.profile_circle,
+                    color: AppColors.primaryColor,
+                    size: 32,
+                  )
+                : UniversalImage(
+                    controller.currentOpponent.value.image,
+                    height: 32,
+                    width: 32,
+                  ),
           ),
         ),
         Ui.boxWidth(24),
         BaseAnimationWidget.r2l(
-            value: widget.animation.value, child: AppText.thin("Sullivan")),
+            value: widget.animation.value,
+            child: AppText.thin(widget.isUser
+                ? controller.currentUser.value.fullName
+                : controller.currentOpponent.value.fullName)),
       ],
     );
   }

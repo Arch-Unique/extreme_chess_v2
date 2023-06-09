@@ -2,11 +2,11 @@ class User {
   String firstName, lastName, email, image, id;
 
   User(
-      {this.firstName = "Fisayo",
-      this.lastName = "Fosudo",
+      {this.firstName = "",
+      this.lastName = "",
       this.image = "",
       this.id = "",
-      this.email = "fisayofosudo@gmail.com"});
+      this.email = ""});
 
   String get fullName => "$firstName $lastName";
 

@@ -1,5 +1,5 @@
 import 'package:extreme_chess_v2/src/global/ui/functions/ui_functions.dart';
-import 'package:extreme_chess_v2/src/home/controllers/dashboard_controller.dart';
+import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
 import 'package:extreme_chess_v2/src/home/views/game_screen_animation.dart';
 import 'package:extreme_chess_v2/src/src_barrel.dart';
 import 'package:flutter/material.dart';
@@ -19,13 +19,13 @@ class _GameScreenState extends State<GameScreen>
   late AnimationController _controller;
   late Animation<double> _animation;
   ChessBoardController chessBoardController = ChessBoardController();
-  final controller = Get.find<DashboardController>();
+  final controller = Get.find<AppController>();
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: Duration(milliseconds: 2000),
+      duration: Duration(milliseconds: 1500),
       vsync: this,
     );
     _animation = CurvedAnimation(
