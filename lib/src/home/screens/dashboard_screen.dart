@@ -55,10 +55,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                   }),
                 )),
                 Expanded(
-                    child: Column(
-                  children: [
-                    HomeMenu(_animation),
-                  ],
+                    child: Padding(
+                  padding: const EdgeInsets.only(left: 24.0),
+                  child: Column(
+                    children: [
+                      HomeMenu(_animation),
+                    ],
+                  ),
                 ))
               ],
             ))

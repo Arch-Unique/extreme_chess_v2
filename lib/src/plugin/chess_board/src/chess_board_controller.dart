@@ -146,6 +146,26 @@ class ChessBoardController extends ValueNotifier<Chess> {
     return game.half_moves;
   }
 
+  List<PieceType> _getCapturedPiecesForColor(Chess game, Color color) {
+    List<PieceType> captured = [];
+
+    for (var move in game.history) {
+      if (move.move.captured != null && move.move.color != color) {
+        captured.add(move.move.captured!);
+      }
+    }
+
+    return captured;
+  }
+
+  List<PieceType> getCapturedWhitePieces(Chess game) {
+    return _getCapturedPiecesForColor(game, Color.WHITE);
+  }
+
+  List<PieceType> getCapturedBlackPieces(Chess game) {
+    return _getCapturedPiecesForColor(game, Color.BLACK);
+  }
+
   /// Gets respective piece
   Piece _getPiece(BoardPieceType piece, PlayerColor color) {
     var convertedColor = color == PlayerColor.white ? Color.WHITE : Color.BLACK;

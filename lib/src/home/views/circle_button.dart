@@ -30,18 +30,20 @@ class CircleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: AppColors.disabledColor.withOpacity(0.1)),
-      ),
-      padding: EdgeInsets.all(16),
-      child: InkWell(
-        onTap: () async {
-          if (onPressed != null) {
-            await onPressed!();
-          }
-        },
+    return InkWell(
+      onTap: () async {
+        if (onPressed != null) {
+          await onPressed!();
+        }
+      },
+      customBorder: CircleBorder(),
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.disabledColor.withOpacity(0.1)),
+        ),
+        padding: EdgeInsets.all(16),
         child: AppIcon(
           icon,
           size: 24,

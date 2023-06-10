@@ -46,6 +46,24 @@ class ChessBoard extends StatefulWidget {
 class _ChessBoardState extends State<ChessBoard> {
   static final lightSquare = Color(0xFFF3F3F3);
   static final darkSquare = Color(0xFF3A3A3A);
+  final controller = Get.find<AppController>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    controller.isTimeout.listen((p0) {
+      if (p0) {
+        _showGameOver(widget.controller.game);
+      }
+    });
+    widget.controller.addListener(() {
+      if (widget.controller.game.game_over) {
+        _showGameOver(widget.controller.game);
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final w = Ui.width(context) / 8;
@@ -90,11 +108,13 @@ class _ChessBoardState extends State<ChessBoard> {
                       pieceColor: pieceOnSquare?.color ?? chess.Color.WHITE,
                     );
 
-                    var draggable = game.get(squareName) != null &&
-                            game.get(squareName)?.color == game.turn
+                    var draggable = game.get(squareName) != null
                         ? Draggable<PieceMoveData>(
                             child: piece,
-                            feedback: piece,
+                            feedback: game.get(squareName)?.color ==
+                                    controller.userColor.value
+                                ? piece
+                                : SizedBox(),
                             childWhenDragging: SizedBox(),
                             data: moveData,
                             onDragStarted: () {
@@ -108,8 +128,7 @@ class _ChessBoardState extends State<ChessBoard> {
                         DragTarget<PieceMoveData>(builder: (context, list, _) {
                       return draggable;
                     }, onWillAccept: (pieceMoveData) {
-                      return pieceOnSquare == null ||
-                          pieceOnSquare.color != game.turn;
+                      return controller.userColor.value == game.turn;
                     }, onAccept: (PieceMoveData pieceMoveData) async {
                       // A way to check if move occurred.
                       chess.Color moveColor = game.turn;
@@ -142,9 +161,6 @@ class _ChessBoardState extends State<ChessBoard> {
                       }
                       if (game.turn != moveColor) {
                         widget.onMove?.call();
-                      }
-                      if (game.game_over) {
-                        _showGameOver(game);
                       }
                     });
 
@@ -254,20 +270,25 @@ class _ChessBoardState extends State<ChessBoard> {
   }
 
   Future _showGameOver(chess.Chess game) async {
-    final controller = Get.find<AppController>();
-    final winnerIsUser = game.turn != controller.userColor.value;
+    controller.cancelTime();
+    bool winnerIsUser = game.turn != controller.userColor.value;
     final user = winnerIsUser
         ? controller.currentUser.value
         : controller.currentOpponent.value;
     String msg = "";
     String title = "";
+
+    String getMsg(bool wiu) {
+      if (wiu) {
+        return "Congrats , You won";
+      } else {
+        return "${user.fullName} won, Try again next time ";
+      }
+    }
+
     if (game.in_checkmate) {
       title = "CHECKMATE";
-      if (winnerIsUser) {
-        msg = "Congrats , You won";
-      } else {
-        msg = "${user.fullName} won, Try again next time ";
-      }
+      msg = getMsg(winnerIsUser);
     } else if (game.in_draw) {
       if (game.in_stalemate) {
         title = "STALEMATE";
@@ -277,43 +298,69 @@ class _ChessBoardState extends State<ChessBoard> {
         title = "INSUFFICIENT MATERIAL";
       }
       msg = "You draw, Nice one";
+    } else if (controller.isTimeout.value) {
+      title = "TIME OUT";
+      if (controller.wTime.value > controller.bTime.value) {
+        winnerIsUser = controller.userColor.value == chess.Color.WHITE;
+        msg = getMsg(winnerIsUser);
+      } else {
+        winnerIsUser = controller.userColor.value == chess.Color.BLACK;
+        msg = getMsg(winnerIsUser);
+      }
     }
     return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: AppText.bold(title, fontSize: 24),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AppText.medium(msg, color: AppColors.darkTextColor),
-              Ui.boxHeight(8),
-              Row(
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        widget.controller.resetBoard();
-                        controller.setTimeForPlayers(widget.controller);
-                        Get.back();
-                      },
-                      icon: Icon(
-                        Icons.restart_alt_rounded,
-                        color: AppColors.darkTextColor,
-                      )),
-                  Ui.boxWidth(24),
-                  IconButton(
-                      onPressed: () {
-                        Get.offAllNamed(AppRoutes.home);
-                      },
-                      icon: Icon(
-                        Icons.home_outlined,
-                        color: AppColors.darkTextColor,
-                      ))
-                ],
-              )
-            ],
-          ),
+        return Stack(
+          children: [
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: AlertDialog(
+                title: AppText.bold(title,
+                    fontSize: 24,
+                    color: AppColors.darkTextColor,
+                    alignment: TextAlign.center),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppText.medium(msg, color: AppColors.darkTextColor),
+                    Ui.boxHeight(8),
+                    Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              widget.controller.resetBoard();
+                              controller.setTimeForPlayers(widget.controller);
+                            },
+                            icon: Icon(
+                              Icons.restart_alt_rounded,
+                              color: AppColors.darkTextColor,
+                            )),
+                        Ui.boxWidth(24),
+                        IconButton(
+                            onPressed: () {
+                              try {
+                                Navigator.of(context).pop();
+                                Get.offAllNamed(AppRoutes.home);
+                              } catch (e) {
+                                print(e);
+                              }
+                            },
+                            icon: Icon(
+                              Icons.home_outlined,
+                              color: AppColors.darkTextColor,
+                            ))
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

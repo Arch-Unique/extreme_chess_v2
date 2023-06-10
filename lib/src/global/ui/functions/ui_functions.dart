@@ -59,9 +59,11 @@ abstract class Ui {
           fontSize: 12, color: AppColors.black, alignment: TextAlign.center),
       boxShadows: [
         BoxShadow(
-            offset: Offset(0, -4), blurRadius: 40, color: AppColors.accentColor)
+            offset: Offset(0, -4),
+            blurRadius: 40,
+            color: AppColors.disabledColor.withOpacity(0.5))
       ],
-      backgroundColor: AppColors.accentColor,
+      backgroundColor: AppColors.white,
       borderRadius: 16,
       forwardAnimationCurve: Curves.elasticInOut,
       icon: Image.asset(

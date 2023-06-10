@@ -11,10 +11,12 @@ class AppController extends GetxController {
   Rx<HomeActions> currentHomeAction = HomeActions.home.obs;
   Rx<ChessEngines> selectedChessEngine = ChessEngines.easy.obs;
   Rx<ChessEngineState> currentChessState = ChessEngineState.initial.obs;
-  final stockfish = Stockfish();
+  var stockfish = Stockfish();
   late ChessBoardController chessController;
   RxInt bTime = 0.obs;
   RxInt wTime = 0.obs;
+  // RxBool isGameOver = false.obs;
+  RxBool isTimeout = false.obs;
   Rx<Color> userColor = Chess.WHITE.obs;
   Rx<User> currentOpponent =
       User(firstName: ChessEngines.easy.title, image: ChessEngines.easy.icon)
@@ -24,15 +26,17 @@ class AppController extends GetxController {
 
   RxString get wTimeString => _formatDuration(wTime.value).obs;
   RxString get bTimeString => _formatDuration(bTime.value).obs;
+  Timer? _timer;
 
   @override
   void onInit() {
     stockfish.state.addListener(() {
       if (stockfish.state.value == StockfishState.ready) {
         stockfish.stdout.listen((event) {
+          print(event);
           if (event == "uciok") {
             if (currentChessState.value == ChessEngineState.uci) {
-              stockfish.stdin = "debug off";
+              // stockfish.stdin = "debug off";
               stockfish.stdin = "setoption name Hash value 32";
               stockfish.stdin = "setoption name UCI_LimitStrength value true";
               stockfish.stdin =
@@ -59,11 +63,17 @@ class AppController extends GetxController {
     super.onInit();
   }
 
+  reInitStockFish() {
+    stockfish = Stockfish();
+  }
+
   _changeElo(int elo) {
     stockfish.stdin = "setoption name UCI_Elo value $elo";
   }
 
   _startNewGame() {
+    currentChessState.value = ChessEngineState.newgame;
+
     if (currentChessState.value == ChessEngineState.newgame) {
       stockfish.stdin = "ucinewgame";
       currentChessState.value = ChessEngineState.ingame;
@@ -78,6 +88,7 @@ class AppController extends GetxController {
   }
 
   setTimeForPlayers(ChessBoardController chessControllerv) {
+    isTimeout.value = false;
     chessController = chessControllerv;
 
     wTime.value = selectedChessEngine.value.time;
@@ -85,6 +96,9 @@ class AppController extends GetxController {
     _startNewGame();
 
     _startCountdown();
+    if (chessController.game.turn != userColor.value) {
+      _engineMove();
+    }
     chessController.addListener(() {
       if (chessController.game.turn != userColor.value) {
         _engineMove();
@@ -92,19 +106,33 @@ class AppController extends GetxController {
     });
   }
 
+  exitGame() {
+    cancelTime();
+    chessController.resetBoard();
+    setTimeForPlayers(chessController);
+  }
+
+  cancelTime() {
+    _timer?.cancel();
+  }
+
   _startCountdown() {
-    Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      if (wTime.value == 0 ||
-          bTime.value == 0 ||
-          chessController.isGameOver()) {
-        timer.cancel();
-        currentChessState.value = ChessEngineState.newgame;
-        _startNewGame();
-      }
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (chessController.game.turn == Chess.WHITE) {
         wTime.value = wTime.value - 1000;
       } else {
         bTime.value = bTime.value - 1000;
+      }
+      if (wTime.value < 1000 || bTime.value < 1000) {
+        print("cancelled");
+
+        if (wTime.value < 1000 || bTime.value < 1000) {
+          isTimeout.value = true;
+        }
+        timer.cancel();
+
+        // _startNewGame();
       }
     });
   }

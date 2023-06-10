@@ -7,7 +7,7 @@ import '../../global/ui/ui_barrel.dart';
 
 class HeaderWidget extends StatelessWidget {
   const HeaderWidget(this.onPressed, {super.key});
-  final VoidCallback onPressed;
+  final Function onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +17,12 @@ class HeaderWidget extends StatelessWidget {
         children: [
           CircleButton.light(
               icon: Icons.arrow_back_ios_new_rounded,
-              onPressed: () {
-                Get.back();
+              onPressed: () async {
+                await onPressed();
               }),
-          CircleButton.light(icon: Iconsax.menu, onPressed: onPressed),
+          CircleButton.light(
+            icon: Iconsax.menu,
+          )
         ],
       ),
     );

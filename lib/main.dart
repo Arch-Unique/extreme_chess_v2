@@ -19,15 +19,15 @@ void main() async {
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );
 
-  FlutterError.onError = (details) {
-    FlutterError.presentError(details);
-    // if (kReleaseMode) exit(1);
-  };
-  PlatformDispatcher.instance.onError = (error, stack) {
-    log('PlatformDispatcher.onError: $error');
-    log(error.toString(), stackTrace: stack);
-    return true;
-  };
+  // FlutterError.onError = (details) {
+  //   FlutterError.presentError(details);
+  //   // if (kReleaseMode) exit(1);
+  // };
+  // PlatformDispatcher.instance.onError = (error, stack) {
+  //   log('PlatformDispatcher.onError: $error');
+  //   log(error.toString(), stackTrace: stack);
+  //   return true;
+  // };
   runApp(const App());
 }
 
@@ -37,20 +37,20 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      builder: (context, widget) {
-        Widget error = const Text('...there was an error...');
-        if (widget is Scaffold || widget is Navigator) {
-          error = Scaffold(
-            body: Center(child: error),
-          );
-        }
+      // builder: (context, widget) {
+      //   Widget error = const Text('...there was an error...');
+      //   if (widget is Scaffold || widget is Navigator) {
+      //     error = Scaffold(
+      //       body: Center(child: error),
+      //     );
+      //   }
 
-        ErrorWidget.builder = (errorDetails) => error;
-        if (widget != null) {
-          return widget;
-        }
-        throw FlutterError('...widget is null...');
-      },
+      //   ErrorWidget.builder = (errorDetails) => error;
+      //   if (widget != null) {
+      //     return widget;
+      //   }
+      //   throw FlutterError('...widget is null...');
+      // },
       initialRoute: AppRoutes.home,
       title: 'Extreme Chess',
       getPages: AppPages.getPages,

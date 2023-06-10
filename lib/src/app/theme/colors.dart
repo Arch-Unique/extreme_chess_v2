@@ -17,6 +17,7 @@ abstract class AppColors {
   static const Color black = Colors.black;
   static const Color grey = Colors.grey;
   static const Color transparent = Colors.transparent;
+  static const Color blackPiece = Color(0xFFFFD700);
 
   static const int _customColorValue = 0xFF9542FF;
 

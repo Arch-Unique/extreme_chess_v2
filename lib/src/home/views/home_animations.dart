@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
@@ -38,6 +39,10 @@ class _HomeHeaderState extends State<HomeHeader> {
                 child: CurvedContainer(
                   padding: EdgeInsets.all(4),
                   color: AppColors.darkTextColor,
+                  onPressed: () {
+                    final controller = Get.find<AppController>();
+                    // controller.stockfish.dispose();
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         shape: BoxShape.circle, color: AppColors.white),
@@ -51,7 +56,11 @@ class _HomeHeaderState extends State<HomeHeader> {
               ),
               BaseAnimationWidget.u2b(
                 value: widget.animation.value,
-                child: CircleButton.dark(icon: Iconsax.menu, onPressed: () {}),
+                child: CircleButton.dark(
+                    icon: Iconsax.menu,
+                    onPressed: () {
+                      _showSettings();
+                    }),
               )
             ],
           );
@@ -63,10 +72,11 @@ class _HomeHeaderState extends State<HomeHeader> {
 
     return showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-            title: AppText.bold("Settings", fontSize: 24),
+            title: AppText.bold("Settings",
+                fontSize: 24, color: AppColors.darkTextColor),
             content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +86,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                   Ui.boxHeight(8),
                   Row(
                     children: [
-                      Builder(builder: (context) {
+                      Obx(() {
                         return CurvedContainer(
                           padding: EdgeInsets.all(24),
                           child: WhiteKing(),
@@ -89,7 +99,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                         );
                       }),
                       Ui.boxWidth(24),
-                      Builder(builder: (context) {
+                      Obx(() {
                         return CurvedContainer(
                           padding: EdgeInsets.all(24),
                           color: controller.userColor.value != chess.Color.WHITE
@@ -269,7 +279,9 @@ class _HomeActionState extends State<HomeAction>
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: AppText.bold(mode.title),
+          backgroundColor: mode.color,
+          title: AppText.bold(mode.title,
+              fontSize: 20, color: AppColors.darkTextColor),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -283,11 +295,68 @@ class _HomeActionState extends State<HomeAction>
                 ),
               ),
               Ui.boxHeight(8),
-              AppText.thin(mode.desc, color: AppColors.darkTextColor)
+              AppText.medium(mode.desc, color: AppColors.darkTextColor)
             ],
           ),
         );
       },
+    );
+  }
+}
+
+class TypewriterScreen extends StatefulWidget {
+  final String text;
+  const TypewriterScreen(this.text, {super.key});
+
+  @override
+  State<TypewriterScreen> createState() => _TypewriterScreenState();
+}
+
+class _TypewriterScreenState extends State<TypewriterScreen> {
+  Timer? _timer;
+  int _currentIndex = 0;
+  String _text = "";
+  Duration _delay = Duration(milliseconds: 100);
+
+  @override
+  void initState() {
+    _text = widget.text;
+    super.initState();
+    _startTypewriter();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startTypewriter() {
+    _timer = Timer.periodic(_delay, (timer) {
+      if (_currentIndex < _text.length) {
+        setState(() {
+          _currentIndex++;
+        });
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String displayedText = _text.substring(0, _currentIndex);
+
+    return Scaffold(
+      body: Center(
+        child: AnimatedBuilder(
+          animation: _timer as Animation<double>,
+          builder: (context, child) {
+            return AppText.medium(displayedText,
+                color: AppColors.darkTextColor);
+          },
+        ),
+      ),
     );
   }
 }
@@ -339,41 +408,41 @@ class _HomeMenuState extends State<HomeMenu>
     return AnimatedBuilder(
         animation: _animation,
         builder: (context, child) {
-          return SizedBox(
-            height: 572,
-            // width: Ui.width(context) * 0.33,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned.fill(
-                    right: -6,
-                    top: 0,
-                    left: 48,
-                    bottom: 360,
-                    child: menuItem(HomeActions.engine)),
-                // menuItem(HomeActions.leaderboard),r
-                Positioned.fill(
-                    right: -6,
-                    left: 48,
-                    top: 360,
-                    child: menuItem(HomeActions.leaderboard)),
-                Positioned.fill(
-                    top: 175,
-                    bottom: 185,
-                    left: 48,
-                    right: -6,
-                    child: menuItem(HomeActions.home)),
-              ],
-            ),
-          );
-          // return Column(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     menuItem(HomeActions.engine),
-          //     menuItem(HomeActions.home),
-          //     menuItem(HomeActions.leaderboard),
-          //   ],
+          // return SizedBox(
+          //   height: 572,
+          //   // width: Ui.width(context) * 0.33,
+          //   child: Stack(
+          //     clipBehavior: Clip.none,
+          //     children: [
+          //       Positioned.fill(
+          //           right: -6,
+          //           top: 0,
+          //           left: 48,
+          //           bottom: 360,
+          //           child: menuItem(HomeActions.engine)),
+          //       // menuItem(HomeActions.leaderboard),r
+          //       Positioned.fill(
+          //           right: -6,
+          //           left: 48,
+          //           top: 360,
+          //           child: menuItem(HomeActions.leaderboard)),
+          //       Positioned.fill(
+          //           top: 175,
+          //           bottom: 185,
+          //           left: 48,
+          //           right: -6,
+          //           child: menuItem(HomeActions.home)),
+          //     ],
+          //   ),
           // );
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              menuItem(HomeActions.engine),
+              menuItem(HomeActions.home),
+              menuItem(HomeActions.leaderboard),
+            ],
+          );
         });
   }
 
@@ -385,9 +454,9 @@ class _HomeMenuState extends State<HomeMenu>
   calcScale(int i) {
     int a = i - controller.currentHomeAction.value.index;
     if (a == 0) {
-      return 1.2;
+      return 1.0;
     } else {
-      return (widget.animation.value * 0.3) + 0.6;
+      return (widget.animation.value * 0.3) + 0.5;
     }
   }
 
@@ -408,7 +477,9 @@ class _HomeMenuState extends State<HomeMenu>
                 color: ha == controller.currentHomeAction.value
                     ? AppColors.darkTextColor
                     : Color(0xFFFCFCFC),
-                radius: 16,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    bottomLeft: Radius.circular(16)),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -427,6 +498,10 @@ class _HomeMenuState extends State<HomeMenu>
                       onPressed: () {
                         if (ha.index == 0) {
                           Get.to(GameScreen());
+                        } else {
+                          // controller.reInitStockFish();
+                          Ui.showInfo(
+                              "Coming Soon, Try beating any of the engines");
                         }
                       },
                       text: ha.btn,
