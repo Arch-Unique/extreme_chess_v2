@@ -280,8 +280,10 @@ class _ChessBoardState extends State<ChessBoard> {
 
     String getMsg(bool wiu) {
       if (wiu) {
+        controller.cgs.value = ChessGameState.winner;
         return "Congrats , You won";
       } else {
+        controller.cgs.value = ChessGameState.loser;
         return "${user.fullName} won, Try again next time ";
       }
     }
@@ -290,6 +292,7 @@ class _ChessBoardState extends State<ChessBoard> {
       title = "CHECKMATE";
       msg = getMsg(winnerIsUser);
     } else if (game.in_draw) {
+      controller.cgs.value = ChessGameState.draw;
       if (game.in_stalemate) {
         title = "STALEMATE";
       } else if (game.in_threefold_repetition) {
@@ -308,6 +311,7 @@ class _ChessBoardState extends State<ChessBoard> {
         msg = getMsg(winnerIsUser);
       }
     }
+    final meme = controller.getRandomMeme();
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -329,7 +333,22 @@ class _ChessBoardState extends State<ChessBoard> {
                     AppText.medium(msg, color: AppColors.darkTextColor),
                     Ui.boxHeight(8),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        IconButton(
+                            onPressed: () {
+                              try {
+                                Navigator.of(context).pop();
+                                Get.offAllNamed(AppRoutes.home);
+                              } catch (e) {
+                                print(e);
+                              }
+                            },
+                            icon: Icon(
+                              Icons.arrow_back_rounded,
+                              color: AppColors.darkTextColor,
+                            )),
+                        Ui.boxWidth(12),
                         IconButton(
                             onPressed: () {
                               Navigator.of(context).pop();
@@ -340,7 +359,7 @@ class _ChessBoardState extends State<ChessBoard> {
                               Icons.restart_alt_rounded,
                               color: AppColors.darkTextColor,
                             )),
-                        Ui.boxWidth(24),
+                        Ui.boxWidth(12),
                         IconButton(
                             onPressed: () {
                               try {
@@ -355,6 +374,11 @@ class _ChessBoardState extends State<ChessBoard> {
                               color: AppColors.darkTextColor,
                             ))
                       ],
+                    ),
+                    Ui.boxHeight(12),
+                    Image.asset(
+                      meme,
+                      width: 200,
                     )
                   ],
                 ),

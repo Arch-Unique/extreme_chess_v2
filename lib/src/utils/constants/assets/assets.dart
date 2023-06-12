@@ -16,4 +16,8 @@ abstract class Assets {
   static const String robot = "assets/images/robot.png";
 
   static const String chessboard = "assets/images/chessboard.png";
+
+  static const String winner = "assets/gifs/winner";
+  static const String loser = "assets/gifs/loser";
+  static const String draw = "assets/gifs/draw";
 }

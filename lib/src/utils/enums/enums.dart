@@ -89,3 +89,17 @@ enum ChessEngines {
 }
 
 enum ChessEngineState { initial, uci, setoptions, newgame, ingame }
+
+enum ChessGameState {
+  winner(14, Assets.winner),
+  loser(29, Assets.loser),
+  draw(3, Assets.draw);
+
+  final int count;
+  final String icon;
+
+  const ChessGameState(
+    this.count,
+    this.icon,
+  );
+}

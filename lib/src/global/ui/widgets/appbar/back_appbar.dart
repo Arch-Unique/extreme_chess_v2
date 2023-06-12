@@ -1,3 +1,4 @@
+import 'package:extreme_chess_v2/src/home/views/circle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '/src/app/app_barrel.dart';
@@ -19,15 +20,10 @@ AppBar backAppBar(
       actions: trailing ?? [],
       leadingWidth: hasBack ? 56 : 28,
       leading: hasBack
-          ? Builder(builder: (context) {
-              return IconButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  icon: Icon(
-                    Icons.arrow_back_ios_rounded,
-                    color: color,
-                  ));
-            })
+          ? CircleButton.light(
+              icon: Icons.arrow_back_ios_new_rounded,
+              onPressed: () async {
+                Get.back();
+              })
           : SizedBox());
 }

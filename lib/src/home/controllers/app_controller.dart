@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:extreme_chess_v2/src/global/model/user.dart';
 import 'package:extreme_chess_v2/src/src_barrel.dart';
@@ -26,6 +27,7 @@ class AppController extends GetxController {
 
   RxString get wTimeString => _formatDuration(wTime.value).obs;
   RxString get bTimeString => _formatDuration(bTime.value).obs;
+  Rx<ChessGameState> cgs = ChessGameState.loser.obs;
   Timer? _timer;
 
   @override
@@ -145,5 +147,11 @@ class AppController extends GetxController {
     final seconds = duration.inSeconds.remainder(60);
 
     return '${twoDigits(minutes)}:${twoDigits(seconds)}';
+  }
+
+  String getRandomMeme() {
+    final l = List.generate(cgs.value.count, (index) => "${index}.webp");
+    final ls = Random().nextInt(cgs.value.count);
+    return cgs.value.icon + l[ls];
   }
 }

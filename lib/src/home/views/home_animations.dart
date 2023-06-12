@@ -6,6 +6,12 @@ import 'package:extreme_chess_v2/src/global/model/user.dart';
 import 'package:extreme_chess_v2/src/global/ui/widgets/others/containers.dart';
 import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
 import 'package:extreme_chess_v2/src/home/screens/game_screen.dart';
+import 'package:extreme_chess_v2/src/home/screens/settings/about_page.dart';
+import 'package:extreme_chess_v2/src/home/screens/settings/contributor_page.dart';
+import 'package:extreme_chess_v2/src/home/screens/settings/credits_page.dart';
+import 'package:extreme_chess_v2/src/home/screens/settings/donation_page.dart';
+import 'package:extreme_chess_v2/src/home/screens/settings/instruction_page.dart';
+import 'package:extreme_chess_v2/src/home/screens/settings/mystats_page.dart';
 import 'package:extreme_chess_v2/src/home/views/base_animations.dart';
 import 'package:extreme_chess_v2/src/home/views/circle_button.dart';
 import 'package:extreme_chess_v2/src/home/views/custom_curve.dart';
@@ -69,6 +75,22 @@ class _HomeHeaderState extends State<HomeHeader> {
 
   Future _showSettings() async {
     final controller = Get.find<AppController>();
+    final screens = [
+      MyStatsScreen(),
+      ContributorScreen(),
+      InstructionScreen(),
+      AboutScreen(),
+      CreditsScreen(),
+      DonationScreen()
+    ];
+    final screenTitle = [
+      "My Stats",
+      "Contributors",
+      "Instructions",
+      "About Us",
+      "Credits & Licenses",
+      "Unleash Your Generosity"
+    ];
 
     return showDialog(
       context: context,
@@ -113,6 +135,19 @@ class _HomeHeaderState extends State<HomeHeader> {
                       }),
                     ],
                   ),
+                  Ui.boxHeight(8),
+                  ...List.generate(
+                      screenTitle.length,
+                      (index) => ListTile(
+                            onTap: () {
+                              Get.to(screens[index]);
+                            },
+                            title: AppText.medium(screenTitle[index],
+                                color: AppColors.darkTextColor),
+                            trailing: AppIcon(
+                              Icons.arrow_forward_ios_rounded,
+                            ),
+                          ))
                 ]));
       },
     );
@@ -362,8 +397,9 @@ class _TypewriterScreenState extends State<TypewriterScreen> {
 }
 
 class HomeMenu extends StatefulWidget {
-  const HomeMenu(this.animation, {super.key});
+  const HomeMenu(this.animation, this.onReverse, {super.key});
   final Animation<double> animation;
+  final Function onReverse;
 
   @override
   State<HomeMenu> createState() => _HomeMenuState();
@@ -497,6 +533,7 @@ class _HomeMenuState extends State<HomeMenu>
                     AppButton(
                       onPressed: () {
                         if (ha.index == 0) {
+                          widget.onReverse();
                           Get.to(GameScreen());
                         } else {
                           // controller.reInitStockFish();
