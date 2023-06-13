@@ -59,9 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   padding: const EdgeInsets.only(left: 24.0),
                   child: Column(
                     children: [
-                      HomeMenu(_animation, () {
-                        _controller.reverse();
-                      }),
+                      HomeMenu(_animation, () {}),
                     ],
                   ),
                 ))

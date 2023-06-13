@@ -7,23 +7,25 @@ import '/src/global/ui/ui_barrel.dart';
 AppBar backAppBar(
     {String? title,
     Widget? titleWidget,
-    Color color = AppColors.textColor,
+    Color color = AppColors.darkTextColor,
     bool hasBack = true,
     List<Widget>? trailing}) {
   return AppBar(
-      toolbarHeight: 96,
       backgroundColor: AppColors.white,
       title: title == null
           ? titleWidget
           : AppText.medium(title, fontSize: 24, color: color),
       elevation: 0,
       actions: trailing ?? [],
-      leadingWidth: hasBack ? 56 : 28,
+      toolbarHeight: 104,
+      leadingWidth: hasBack ? 104 : 28,
       leading: hasBack
-          ? CircleButton.light(
-              icon: Icons.arrow_back_ios_new_rounded,
-              onPressed: () async {
-                Get.back();
-              })
+          ? Padding(
+              padding: EdgeInsets.only(left: 0, top: 24, bottom: 24),
+              child: CircleButton.dark(
+                  icon: Icons.arrow_back_ios_new_rounded,
+                  onPressed: () async {
+                    Get.back();
+                  }))
           : SizedBox());
 }
