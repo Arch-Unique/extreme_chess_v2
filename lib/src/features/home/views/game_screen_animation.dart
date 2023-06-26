@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:chess/chess.dart' hide State;
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 import 'package:extreme_chess_v2/src/global/ui/ui_barrel.dart';
 import 'package:extreme_chess_v2/src/global/ui/widgets/others/containers.dart';
 import 'package:extreme_chess_v2/src/global/ui/widgets/others/others.dart';
-import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
-import 'package:extreme_chess_v2/src/home/views/base_animations.dart';
-import 'package:extreme_chess_v2/src/home/views/header.dart';
+import 'package:extreme_chess_v2/src/features/home/controllers/app_controller.dart';
+import 'package:extreme_chess_v2/src/features/home/views/base_animations.dart';
+import 'package:extreme_chess_v2/src/features/home/views/header.dart';
 import 'package:extreme_chess_v2/src/src_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -53,47 +55,37 @@ class _GameHeaderProfileState extends State<GameHeaderProfile> {
         animation: widget.animation,
         builder: (_, __) {
           return Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: 24, vertical: widget.isUser ? 24.0 : 0.0),
+            padding: EdgeInsets.all(24),
             child: ValueListenableBuilder(
                 valueListenable: controller.chessController,
                 builder: (context, game, _) {
-                  return Column(
+                  return Row(
                     children: [
-                      if (widget.isUser)
-                        SizedBox(
-                          height: 16,
-                          child: Obx(() {
-                            return game.turn == controller.userColor.value
-                                ? AppText.thin("Your turn...",
-                                    fontSize: 14,
-                                    alignment: TextAlign.center,
-                                    color: AppColors.white.withOpacity(0.5))
-                                : SizedBox();
-                          }),
-                        ),
-                      if (widget.isUser) Ui.boxHeight(16),
-                      Row(
-                        children: [
-                          !widget.isUser ? profile() : timer(),
-                          const Spacer(),
-                          !widget.isUser ? timer() : profile()
-                        ],
+                      !widget.isUser ? profile() : timer(),
+                      const Spacer(),
+                      SizedBox(
+                        height: 16 * Ui.mult(context),
+                        child: Obx(() {
+                          if (game.turn == controller.userColor.value &&
+                              widget.isUser) {
+                            return AppText.thin("Your turn...",
+                                fontSize: 14,
+                                alignment: TextAlign.center,
+                                color: AppColors.white.withOpacity(0.5));
+                          } else if (game.turn != controller.userColor.value &&
+                              !widget.isUser) {
+                            return AppText.thin(
+                                "${controller.currentOpponent.value.username} is thinking...",
+                                fontSize: 14,
+                                alignment: TextAlign.center,
+                                color: AppColors.white.withOpacity(0.5));
+                          } else {
+                            return SizedBox();
+                          }
+                        }),
                       ),
-                      if (!widget.isUser) Ui.boxHeight(16),
-                      if (!widget.isUser)
-                        SizedBox(
-                          height: 16,
-                          child: Obx(() {
-                            return game.turn == controller.userColor.value
-                                ? SizedBox()
-                                : AppText.thin(
-                                    "${controller.currentOpponent.value.firstName} is thinking...",
-                                    fontSize: 14,
-                                    alignment: TextAlign.center,
-                                    color: AppColors.white.withOpacity(0.5));
-                          }),
-                        )
+                      const Spacer(),
+                      !widget.isUser ? timer() : profile()
                     ],
                   );
                 }),
@@ -131,8 +123,8 @@ class _GameHeaderProfileState extends State<GameHeaderProfile> {
               value: widget.animation.value,
               child: AppText.thin(
                   widget.isUser
-                      ? controller.currentUser.value.fullName
-                      : controller.currentOpponent.value.fullName,
+                      ? controller.appRepo.appService.currentUser.value.username
+                      : controller.currentOpponent.value.username,
                   color: AppColors.darkTextColor)),
         ],
       ),
@@ -155,11 +147,11 @@ class _GameHeaderProfileState extends State<GameHeaderProfile> {
             ),
             Ui.boxWidth(8),
             Obx(() {
-              return AppText.medium(
-                  widget.isWhite
-                      ? controller.wTimeString.value
-                      : controller.bTimeString.value,
-                  fontFamily: "Roboto");
+              return AppText.bold(
+                widget.isWhite
+                    ? controller.wTimeString.value
+                    : controller.bTimeString.value,
+              );
             })
           ],
         ),
@@ -191,7 +183,7 @@ class _CapturedPiecesState extends State<CapturedPieces> {
           }
           return SizedBox(
             width: Ui.width(context),
-            height: 24,
+            height: 24 * Ui.mult(context),
             child: Center(
               child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -286,5 +278,52 @@ class _CapturedPiecesState extends State<CapturedPieces> {
         imageToDisplay = WhitePawn();
     }
     return imageToDisplay;
+  }
+}
+
+class AnimatedSearchBackground extends StatefulWidget {
+  const AnimatedSearchBackground({super.key});
+
+  @override
+  State<AnimatedSearchBackground> createState() =>
+      _AnimatedSearchBackgroundState();
+}
+
+class _AnimatedSearchBackgroundState extends State<AnimatedSearchBackground> {
+  final scrollController = ScrollController();
+  double scrollvalue = 0.0;
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(milliseconds: 100), (timer) {
+      final offset = scrollvalue * (1300 - Ui.width(context));
+      scrollvalue += 0.002;
+
+      scrollController.animateTo(offset,
+          duration: Duration(milliseconds: 100), curve: Curves.linear);
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        controller: scrollController,
+        scrollDirection: Axis.horizontal,
+        itemCount: 100,
+        itemBuilder: (_, i) {
+          return Image.asset(
+            Assets.world,
+            height: Ui.height(context),
+          );
+        });
   }
 }

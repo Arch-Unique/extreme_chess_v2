@@ -1,3 +1,4 @@
+import 'package:extreme_chess_v2/src/global/ui/ui_barrel.dart';
 import 'package:flutter/material.dart';
 import '/src/app/app_barrel.dart';
 
@@ -55,7 +56,7 @@ class AppText extends StatelessWidget {
   }) =>
       AppText(
         text,
-        weight: FontWeight.w700,
+        weight: FontWeight.w600,
         fontFamily: fontFamily,
         color: color,
         alignment: alignment,
@@ -129,7 +130,7 @@ class AppText extends StatelessWidget {
 
       style: TextStyle(
         decoration: decoration,
-        fontSize: fontSize ?? 14,
+        fontSize: (fontSize ?? 14) * Ui.mult(context),
         color: color ?? AppColors.textColor,
         fontWeight: weight,
         overflow: overflow,

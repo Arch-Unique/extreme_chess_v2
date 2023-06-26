@@ -1,20 +1,22 @@
 abstract class AppUrls {
-  static const String baseURL = 'https://api.fake-rest.refine.dev';
+  // static const String baseURL = 'https://extremechess.archyuniq.xyz/api';
+  static const String homeURL = 'http://www.archyuniq.xyz:3060';
+  static const String baseURL = '$homeURL/api';
 
   //auth repo
-  static const String login = "/login";
-  static const String loginSocial = "/login-social";
+  static const String login = "/user/login";
   static const String logout = "/logout";
-  static const String register = "/register";
-  static const String forgotPassword = "/forgot-password";
+  // static const String register = "/register";
+  // static const String forgotPassword = "/forgot-password";
 
   //profile repo
-  static const String getUser = "/get-user";
-  static const String changePassword = "/change-password";
-  static const String favourites = "/favourites";
-  static const String donations = "/donations";
+  static const String getUser = "/user/profile/";
+  static const String changePassword = "/user/change-password";
+  static const String leaderboard = "/user/leaderboard";
+  static const String history = "/user/history";
 
-  //facility repo
-  static const String facility = "/facility";
-  static const String patients = "/patient";
+  //game repo
+
+  //engine repo
+  static const String engine = "/engine";
 }

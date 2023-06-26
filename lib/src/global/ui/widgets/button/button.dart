@@ -27,7 +27,7 @@ class AppButton extends StatefulWidget {
   @override
   State<AppButton> createState() => _AppButtonState();
 
-  static social(
+  static Widget social(
     Function? onPressed,
     String icon,
   ) {
@@ -39,7 +39,7 @@ class AppButton extends StatefulWidget {
     );
   }
 
-  static half(
+  static Widget half(
     Function? onPressed,
     String title,
   ) {
@@ -50,7 +50,7 @@ class AppButton extends StatefulWidget {
     );
   }
 
-  static white(
+  static Widget white(
     Function? onPressed,
     String title,
   ) {
@@ -61,11 +61,12 @@ class AppButton extends StatefulWidget {
     );
   }
 
-  static outline(Function? onPressed, String title,
-      {Color color = AppColors.primaryColor}) {
+  static Widget outline(Function? onPressed, String title,
+      {Color color = AppColors.white}) {
     return AppButton(
       onPressed: onPressed,
       hasBorder: true,
+      borderColor: AppColors.primaryColor,
       text: title,
       color: color,
     );
@@ -104,15 +105,20 @@ class _AppButtonState extends State<AppButton> {
       onPressed: (disabled || widget.onPressed == null)
           ? null
           : () async {
-              setState(() {
-                disabled = true;
-                isPressed = true;
-              });
+              if (mounted) {
+                setState(() {
+                  disabled = true;
+                  isPressed = true;
+                });
+              }
               await widget.onPressed!();
-              setState(() {
-                disabled = false;
-                isPressed = false;
-              });
+
+              if (mounted) {
+                setState(() {
+                  disabled = false;
+                  isPressed = false;
+                });
+              }
             },
       child: widget.isCircle
           ? Container(

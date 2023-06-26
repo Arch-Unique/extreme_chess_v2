@@ -20,7 +20,7 @@ class CircleButton extends StatelessWidget {
     );
   }
 
-  static dark({dynamic icon, Function? onPressed}) {
+  static Widget dark({dynamic icon, Function? onPressed}) {
     return CircleButton(
       icon: icon,
       color: AppColors.secondaryColor,
@@ -43,11 +43,13 @@ class CircleButton extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.disabledColor.withOpacity(0.1)),
         ),
-        padding: EdgeInsets.all(16),
-        child: AppIcon(
-          icon,
-          size: 24,
-          color: color,
+        padding: EdgeInsets.all(16 * Ui.mult(context)),
+        child: Center(
+          child: AppIcon(
+            icon,
+            size: 24 * Ui.mult(context),
+            color: color,
+          ),
         ),
       ),
     );

@@ -48,7 +48,7 @@ class BaseAnimationWidget extends StatelessWidget {
     );
   }
 
-  static r2l({required double value, required Widget child}) {
+  static Widget r2l({required double value, required Widget child}) {
     return BaseAnimationWidget(
       animation: value,
       isHorizontal: true,

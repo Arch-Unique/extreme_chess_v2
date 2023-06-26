@@ -1,4 +1,4 @@
-import 'package:extreme_chess_v2/src/home/views/circle_button.dart';
+import 'package:extreme_chess_v2/src/features/home/views/circle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '/src/app/app_barrel.dart';
@@ -18,6 +18,7 @@ AppBar backAppBar(
       elevation: 0,
       actions: trailing ?? [],
       toolbarHeight: 104,
+      centerTitle: true,
       leadingWidth: hasBack ? 104 : 28,
       leading: hasBack
           ? Padding(

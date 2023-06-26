@@ -4,13 +4,13 @@ class MyPrefs {
   static const String mpIsLoggedIn = "mpIsLoggedIn";
   static const String mpUserID = "mpUserID";
   static const String mpUserJWT = "mpUserJWT";
-  static const String mpUserRefreshJWT = "mpUserRefreshJWT";
   static const String mpLoginExpiry = "mpLoginExpiry";
   static const String hasOpenedOnboarding = "hasOpenedOnboarding";
-  static const String mpFirstName = "mpFirstName";
-  static const String mpLastName = "mpLastName";
-  static const String mpLogin3rdParty = "mpLogin3rdParty";
-  static const String mpDynamicOn = "mpDynamicOn";
+  static const String mpUserName = "mpUserName";
+  static const String mpUserElo = "mpUserElo";
+  static const String mpUsercWDL = "mpUsercWDL";
+  static const String mpUsermWDL = "mpUsermWDL";
+  static const String mpUserbWDL = "mpUserbWDL";
 
   // static void listenToStorageChanges(String k, void Function(dynamic) v) {
   //   _prefs.listenKey(k, (j) {

@@ -1,12 +1,12 @@
 import 'package:extreme_chess_v2/src/global/ui/functions/ui_functions.dart';
 import 'package:extreme_chess_v2/src/global/ui/ui_barrel.dart';
-import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
-import 'package:extreme_chess_v2/src/home/views/game_screen_animation.dart';
+import 'package:extreme_chess_v2/src/features/home/controllers/app_controller.dart';
+import 'package:extreme_chess_v2/src/features/home/views/game_screen_animation.dart';
 import 'package:extreme_chess_v2/src/src_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../plugin/chess_board/flutter_chess_board.dart';
+import '../../../plugin/chess_board/flutter_chess_board.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -35,7 +35,10 @@ class _GameScreenState extends State<GameScreen>
         reverseCurve: Curves.easeOut);
 
     _controller.forward();
-    controller.setTimeForPlayers(chessBoardController);
+    controller.setChessBoardController(chessBoardController);
+    if (controller.isOfflineMode.value) {
+      controller.setTimeForPlayers();
+    }
   }
 
   @override
@@ -65,6 +68,7 @@ class _GameScreenState extends State<GameScreen>
                   Get.back();
                 }
               }),
+              const Spacer(),
               Obx(() {
                 return GameHeaderProfile(
                   _animation,
@@ -72,12 +76,12 @@ class _GameScreenState extends State<GameScreen>
                   isWhite: controller.userColor.value != Color.WHITE,
                 );
               }),
-              Ui.boxHeight(8),
+              Ui.boxHeight(16),
               Obx(() {
                 return CapturedPieces(
                     controller.userColor.value == Color.WHITE);
               }),
-              Ui.boxHeight(8),
+              const Spacer(),
               Obx(() {
                 return ChessBoard(
                   controller: chessBoardController,
@@ -86,12 +90,12 @@ class _GameScreenState extends State<GameScreen>
                       : PlayerColor.black,
                 );
               }),
-              Ui.boxHeight(8),
+              const Spacer(),
               Obx(() {
                 return CapturedPieces(
                     controller.userColor.value != Color.WHITE);
               }),
-              Ui.boxHeight(8),
+              Ui.boxHeight(16),
               Obx(() {
                 return GameHeaderProfile(
                   _animation,
@@ -99,6 +103,7 @@ class _GameScreenState extends State<GameScreen>
                   isWhite: controller.userColor.value == Color.WHITE,
                 );
               }),
+              const Spacer(),
             ],
           ),
         ),

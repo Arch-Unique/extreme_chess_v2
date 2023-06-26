@@ -1,26 +1,30 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
+import 'package:extreme_chess_v2/src/features/home/screens/online/create_game_screen.dart';
+import 'package:extreme_chess_v2/src/features/home/screens/online/search_screen.dart';
+import 'package:extreme_chess_v2/src/global/controller/connection_controller.dart';
 import 'package:extreme_chess_v2/src/global/model/user.dart';
 import 'package:extreme_chess_v2/src/global/ui/widgets/others/containers.dart';
-import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
-import 'package:extreme_chess_v2/src/home/screens/game_screen.dart';
-import 'package:extreme_chess_v2/src/home/screens/settings/about_page.dart';
-import 'package:extreme_chess_v2/src/home/screens/settings/contributor_page.dart';
-import 'package:extreme_chess_v2/src/home/screens/settings/credits_page.dart';
-import 'package:extreme_chess_v2/src/home/screens/settings/donation_page.dart';
-import 'package:extreme_chess_v2/src/home/screens/settings/instruction_page.dart';
-import 'package:extreme_chess_v2/src/home/screens/settings/mystats_page.dart';
-import 'package:extreme_chess_v2/src/home/views/base_animations.dart';
-import 'package:extreme_chess_v2/src/home/views/circle_button.dart';
-import 'package:extreme_chess_v2/src/home/views/custom_curve.dart';
+import 'package:extreme_chess_v2/src/features/home/controllers/app_controller.dart';
+import 'package:extreme_chess_v2/src/features/home/screens/game_screen.dart';
+import 'package:extreme_chess_v2/src/features/home/screens/settings/about_page.dart';
+import 'package:extreme_chess_v2/src/features/home/screens/settings/contributor_page.dart';
+import 'package:extreme_chess_v2/src/features/home/screens/settings/credits_page.dart';
+import 'package:extreme_chess_v2/src/features/home/screens/settings/donation_page.dart';
+import 'package:extreme_chess_v2/src/features/home/screens/settings/instruction_page.dart';
+import 'package:extreme_chess_v2/src/features/home/screens/settings/mystats_page.dart';
+import 'package:extreme_chess_v2/src/features/home/views/base_animations.dart';
+import 'package:extreme_chess_v2/src/features/home/views/circle_button.dart';
+import 'package:extreme_chess_v2/src/features/home/views/custom_curve.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
 
-import '../../global/ui/ui_barrel.dart';
-import '../../src_barrel.dart';
+import '../../../global/ui/ui_barrel.dart';
+import '../../../src_barrel.dart';
 import 'package:chess/chess.dart' as chess;
 
 class HomeHeader extends StatefulWidget {
@@ -47,15 +51,15 @@ class _HomeHeaderState extends State<HomeHeader> {
                   color: AppColors.darkTextColor,
                   onPressed: () {
                     final controller = Get.find<AppController>();
-                    // controller.stockfish.dispose();
+                    controller.stockfish.dispose();
                   },
                   child: Container(
                     decoration: BoxDecoration(
                         shape: BoxShape.circle, color: AppColors.white),
-                    padding: EdgeInsets.all(8),
+                    padding: EdgeInsets.all(8 * Ui.mult(context)),
                     child: Image.asset(
                       Assets.trophy,
-                      height: 24,
+                      height: 24 * Ui.mult(context),
                     ),
                   ),
                 ),
@@ -97,43 +101,64 @@ class _HomeHeaderState extends State<HomeHeader> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-            title: AppText.bold("Settings",
-                fontSize: 24, color: AppColors.darkTextColor),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AppText.bold("Settings",
+                    fontSize: 24, color: AppColors.darkTextColor),
+                InkWell(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: AppIcon(
+                      Icons.close,
+                      color: AppColors.darkTextColor,
+                    ))
+              ],
+            ),
             content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppText.medium("Player Color:",
-                      color: AppColors.darkTextColor),
-                  Ui.boxHeight(8),
-                  Row(
-                    children: [
-                      Obx(() {
-                        return CurvedContainer(
-                          padding: EdgeInsets.all(24),
-                          child: WhiteKing(),
-                          color: controller.userColor.value == chess.Color.WHITE
-                              ? AppColors.primaryColor
-                              : AppColors.transparent,
-                          onPressed: () {
-                            controller.userColor.value = chess.Color.WHITE;
-                          },
-                        );
-                      }),
-                      Ui.boxWidth(24),
-                      Obx(() {
-                        return CurvedContainer(
-                          padding: EdgeInsets.all(24),
-                          color: controller.userColor.value != chess.Color.WHITE
-                              ? AppColors.primaryColor
-                              : AppColors.transparent,
-                          onPressed: () {
-                            controller.userColor.value = chess.Color.BLACK;
-                          },
-                          child: BlackKing(),
-                        );
-                      }),
-                    ],
+                  ListTile(
+                    title: AppText.medium("Player Color:",
+                        color: AppColors.darkTextColor),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Obx(() {
+                          return CurvedContainer(
+                            padding: EdgeInsets.all(8),
+                            child: WhiteKing(
+                              size: 24,
+                            ),
+                            color:
+                                controller.userColor.value == chess.Color.WHITE
+                                    ? AppColors.primaryColor
+                                    : AppColors.transparent,
+                            onPressed: () {
+                              controller.userColor.value = chess.Color.WHITE;
+                            },
+                          );
+                        }),
+                        Ui.boxWidth(16),
+                        Obx(() {
+                          return CurvedContainer(
+                            padding: EdgeInsets.all(8),
+                            color:
+                                controller.userColor.value != chess.Color.WHITE
+                                    ? AppColors.primaryColor
+                                    : AppColors.transparent,
+                            onPressed: () {
+                              controller.userColor.value = chess.Color.BLACK;
+                            },
+                            child: BlackKing(
+                              size: 24,
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
                   ),
                   Ui.boxHeight(8),
                   ...List.generate(
@@ -144,10 +169,32 @@ class _HomeHeaderState extends State<HomeHeader> {
                             },
                             title: AppText.medium(screenTitle[index],
                                 color: AppColors.darkTextColor),
-                            trailing: AppIcon(
-                              Icons.arrow_forward_ios_rounded,
-                            ),
-                          ))
+                            trailing: AppIcon(Icons.arrow_forward_ios_rounded,
+                                color: AppColors.darkTextColor, size: 16),
+                          )),
+                  Ui.boxHeight(8),
+                  Obx(() {
+                    return controller.appRepo.appService.isLoggedIn.value
+                        ? AppButton.outline(() async {
+                            await controller.appRepo.appService.logout();
+                          }, "Logout")
+                        : AppButton(
+                            onPressed: () async {
+                              await controller.appRepo
+                                  .loginSocial(ThirdPartyTypes.google);
+                            },
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Logo(
+                                    Logos.google,
+                                    size: 24,
+                                  ),
+                                  Ui.boxWidth(24),
+                                  AppText.button("Login with Google")
+                                ]),
+                          );
+                  })
                 ]));
       },
     );
@@ -167,11 +214,13 @@ class _HomeActionState extends State<HomeAction>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  List<AvailableUser> robots = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-
+    getAllRobots();
     _controller = AnimationController(
       duration: Duration(milliseconds: 2000),
       vsync: this,
@@ -186,6 +235,21 @@ class _HomeActionState extends State<HomeAction>
         _controller.reverse();
       }
     });
+  }
+
+  Future getAllRobots() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+      final appController = Get.find<AppController>();
+
+      robots = await appController.appRepo.getRobots();
+      appController.onlineEngines = robots;
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -207,6 +271,8 @@ class _HomeActionState extends State<HomeAction>
             tor = homeAction(Ui.height(context) / 2);
           } else if (widget._homeAction == HomeActions.engine) {
             tor = engineAction();
+          } else {
+            tor = leaderboardAction();
           }
           return Column(
             // mainAxisAlignment: MainAxisAlignment.center,
@@ -223,29 +289,75 @@ class _HomeActionState extends State<HomeAction>
   }
 
   homeAction(double h) {
-    return SizedBox(
-      height: h,
-      child: Stack(
-        alignment: AlignmentDirectional.center,
-        children: [
-          BaseAnimationWidget.b2u(
-              value: _animation.value - 0.1,
-              child: Image.asset(
-                Assets.blackChess,
-                height: h - 64,
-              )),
-          Transform.rotate(
-            angle: pi / 6,
-            child: BaseAnimationWidget.b2u(
-                value: _animation.value,
+    return GestureDetector(
+      onLongPress: () {
+        _showGMArena();
+      },
+      child: SizedBox(
+        height: h,
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            BaseAnimationWidget.b2u(
+                value: _animation.value - 0.1,
                 child: Image.asset(
-                  Assets.whiteChess,
-                  height: h - 128,
+                  Assets.blackChess,
+                  height: h - 64,
                 )),
-          )
-        ],
+            Transform.rotate(
+              angle: pi / 6,
+              child: BaseAnimationWidget.b2u(
+                  value: _animation.value,
+                  child: Image.asset(
+                    Assets.whiteChess,
+                    height: h - 128,
+                  )),
+            )
+          ],
+        ),
       ),
     );
+  }
+
+  leaderboardAction() {
+    final connectionController = Get.find<ConnectionController>();
+    return Obx(() {
+      return connectionController.isConnected.value
+          ? !isLoading
+              ? robots.isEmpty
+                  ? AppButton(
+                      onPressed: () async {
+                        await getAllRobots();
+                      },
+                      text: "Refresh",
+                    )
+                  : Column(
+                      children: [
+                        ...List.generate(
+                            robots.length,
+                            (index) => BaseAnimationWidget.l2r(
+                                value: _animation.value,
+                                child: Opacity(
+                                    opacity: (0.1 * (robots.length - index))
+                                        .clamp(0.0, 1.0),
+                                    child: onlineEngineItem(robots[index]))))
+                      ],
+                    )
+              : AppText.thin("Loading...", color: AppColors.disabledColor)
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppIcon(
+                  Icons.wifi_rounded,
+                  color: AppColors.disabledColor,
+                  size: 64,
+                ),
+                Ui.boxHeight(24),
+                AppText.thin("No Network Detected",
+                    color: AppColors.disabledColor)
+              ],
+            );
+    });
   }
 
   engineAction() {
@@ -254,6 +366,28 @@ class _HomeActionState extends State<HomeAction>
         ...List.generate(ChessEngines.values.length,
             (index) => engineItem(ChessEngines.values[index]))
       ],
+    );
+  }
+
+  Widget onlineEngineItem(AvailableUser user) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 16,
+            backgroundImage: CachedNetworkImageProvider(user.image),
+          ),
+          Ui.boxWidth(4),
+          AppText.thin(user.username.capitalizeFirst!,
+              color: AppColors.darkTextColor),
+          const Spacer(),
+          AppText.bold(user.elo.toString(),
+              // fontFamily: "Roboto",
+              fontSize: 16,
+              color: AppColors.darkTextColor.withOpacity(0.5)),
+        ],
+      ),
     );
   }
 
@@ -280,7 +414,7 @@ class _HomeActionState extends State<HomeAction>
             onPressed: () {
               controller.selectedChessEngine.value = mode;
               controller.currentOpponent.value =
-                  User(firstName: mode.title, image: mode.icon);
+                  User(username: mode.title, image: mode.icon, elo: mode.elo);
               // setState(() {});
             },
             onLongPressed: () {
@@ -306,6 +440,50 @@ class _HomeActionState extends State<HomeAction>
         );
       }),
     );
+  }
+
+  Future _showGMArena() async {
+    return showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Color(0xFFC0C0C0),
+            title: AppText.bold("GrandMaster Arena",
+                fontSize: 20, color: AppColors.darkTextColor),
+            content: AppText.thin('''
+In the midst of this captivating realm,
+Emerges the grand challenge at the helm.
+Once victorious over the engines mighty,
+The gateway to Online Mode shines brightly.
+
+Becoming a Grandmaster, a momentous feat,
+Conquer Chaos, Mayhem, or Brutal, complete.
+With this triumph, the title is bestowed,
+Grandmaster status, your skills proudly showed.
+
+Enter the Online Mode, a worldwide stage,
+Face off against Grandmasters, undeterred by age.
+Engage in battles of wit and cerebral might,
+Where strategies clash and champions ignite.
+
+Rest assured, your opponents are elite,
+Having conquered the engines, they're hard to beat.
+If no rivals are found on this grand endeavor,
+Choose from ten open source engines, just as clever.
+
+Stockfish and companions, masters of their kind,
+Offering limitless expertise, a true chess mastermind.
+These additional features enhance the thrill,
+With unrivaled challenges and skills to fulfill.
+
+In this grand arena where intellect thrives,
+The chess world mesmerized, passion revived.
+From the intro to the conclusion, it's clear,
+Chess engines reign supreme, forever held dear.
+''', color: AppColors.darkTextColor),
+          );
+        });
   }
 
   Future _showEngineInfo(ChessEngines mode) async {
@@ -505,7 +683,7 @@ class _HomeMenuState extends State<HomeMenu>
             value: widget.animation.value,
             child: Obx(() {
               return CurvedContainer(
-                padding: EdgeInsets.all(24),
+                padding: EdgeInsets.all(24 * Ui.mult(context)),
                 onPressed: () {
                   controller.currentHomeAction.value = ha;
                   setState(() {});
@@ -531,12 +709,29 @@ class _HomeMenuState extends State<HomeMenu>
                             : AppColors.darkTextColor),
                     Ui.boxHeight(16),
                     AppButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (ha.index == 0) {
-                          widget.onReverse();
+                          // widget.onReverse();
                           Get.to(GameScreen());
+                        } else if (ha.index == 1) {
+                          // Get.to(CreateOnlineGameScreen());
+                          if (controller.appRepo.appService.isLoggedIn.value) {
+                            if (controller
+                                    .appRepo.appService.currentUser.value.elo ==
+                                0) {
+                              Ui.showInfo(
+                                  "You've not yet beaten any of the 3 engines");
+                            } else {
+                              //TODO
+                              controller.appRepo.apiService.socket.connect();
+                              controller.setupSocketGame();
+                              Get.to(CreateOnlineGameScreen());
+                            }
+                          } else {
+                            Ui.showError("Please Sign In to continue");
+                          }
                         } else {
-                          // controller.reInitStockFish();
+                          controller.reInitStockFish();
                           Ui.showInfo(
                               "Coming Soon, Try beating any of the engines");
                         }
@@ -549,5 +744,57 @@ class _HomeMenuState extends State<HomeMenu>
             })),
       ),
     );
+  }
+}
+
+class AnimatedOpponent extends StatefulWidget {
+  const AnimatedOpponent({super.key});
+
+  @override
+  State<AnimatedOpponent> createState() => _AnimatedOpponentState();
+}
+
+class _AnimatedOpponentState extends State<AnimatedOpponent>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  Color color = AppColors.primaryColor;
+
+  @override
+  void initState() {
+    // TODO: implement
+    print("moving opponent");
+
+    _controller = AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: 8000),
+        upperBound: Colors.accents.length - 1)
+      ..repeat(reverse: true);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+        animation: _controller.view,
+        builder: (_, __) {
+          return Transform.scale(
+            scale: _controller.value,
+            child: CircleAvatar(
+              radius: 32,
+              backgroundColor: Colors.accents[_controller.value.floor()],
+              child: AppIcon(
+                Iconsax.profile_circle,
+                size: 48,
+              ),
+            ),
+          );
+        });
   }
 }

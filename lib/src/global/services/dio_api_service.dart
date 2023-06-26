@@ -1,10 +1,13 @@
 import 'package:extreme_chess_v2/src/global/interfaces/api_service.dart';
+import 'package:extreme_chess_v2/src/global/model/barrel.dart';
+import 'package:extreme_chess_v2/src/global/model/user.dart';
 import 'package:extreme_chess_v2/src/global/services/barrel.dart';
 import 'package:extreme_chess_v2/src/src_barrel.dart';
 import 'package:extreme_chess_v2/src/utils/constants/prefs/prefs.dart';
 import 'package:dio/dio.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/state_manager.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class DioApiService extends GetxService implements ApiService {
   final Dio _dio;
@@ -12,6 +15,14 @@ class DioApiService extends GetxService implements ApiService {
   CancelToken _cancelToken = CancelToken();
   final prefService = Get.find<MyPrefService>();
   Rx<ErrorTypes> currentErrorType = ErrorTypes.noInternet.obs;
+  Socket socket = io(
+      AppUrls.homeURL,
+      OptionBuilder()
+          .setTransports(['websocket']) // for Flutter or Dart VM
+          .disableAutoConnect() // disable auto-connection
+          // .setExtraHeaders({'foo': 'bar'}) // optional
+          .setPath("/playgame")
+          .build());
 
   DioApiService()
       : _dio = Dio(
@@ -36,6 +47,7 @@ class DioApiService extends GetxService implements ApiService {
     final response = await _dio.get(url,
         cancelToken: _cancelToken,
         options: Options(headers: _getHeader(hasToken)));
+    // print(response);
     _lastRequestOptions = response.requestOptions;
 
     return response;
@@ -97,10 +109,7 @@ class DioApiService extends GetxService implements ApiService {
 
   Map<String, dynamic>? _getHeader([bool hasToken = true]) {
     return hasToken
-        ? {
-            "Authorization":
-                "Bearer ${prefService.get(MyPrefs.mpUserJWT) ?? ""}"
-          }
+        ? {"x-access-token": prefService.get(MyPrefs.mpUserJWT) ?? ""}
         : {};
   }
 
@@ -110,23 +119,24 @@ class DioApiService extends GetxService implements ApiService {
 
     List<T> fg = [];
 
-    // if (rawRes is List) {
-    //   final res = rawRes;
-    //   for (var i = 0; i < res.length; i++) {
-    //     final f = res[i];
-    //     if (T == Facility) {
-    //       fg.add(Facility.fromJson(f) as T);
-    //     } else if (T == Patient) {
-    //       fg.add(Patient.fromJson(f) as T);
-    //     } else if (T == Donation) {
-    //       fg.add(Donation.fromJson(f) as T);
-    //     }
-    //   }
-    // }
+    if (rawRes is List) {
+      final res = rawRes;
+      for (var i = 0; i < res.length; i++) {
+        final f = res[i];
+        if (T == AvailableUser) {
+          fg.add(AvailableUser.fromJson(f) as T);
+        } else if (T == User) {
+          fg.add(User.fromJson(f) as T);
+        } else if (T == Game) {
+          fg.add(Game.fromJson(f) as T);
+        }
+      }
+    }
     if (fg.isEmpty) {
       // fg = _demoList<T>();
-      print(fg);
+      // print(fg);
     }
+    print(fg);
 
     return fg;
   }

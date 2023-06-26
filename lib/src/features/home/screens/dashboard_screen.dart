@@ -1,6 +1,6 @@
 import 'package:extreme_chess_v2/src/global/ui/ui_barrel.dart';
-import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
-import 'package:extreme_chess_v2/src/home/views/home_animations.dart';
+import 'package:extreme_chess_v2/src/features/home/controllers/app_controller.dart';
+import 'package:extreme_chess_v2/src/features/home/views/home_animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -40,6 +40,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   @override
   Widget build(BuildContext context) {
+    print(MediaQuery.of(context).size);
     return Scaffold(
       body: SafeArea(
         child: Column(

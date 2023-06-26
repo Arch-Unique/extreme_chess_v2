@@ -1,6 +1,6 @@
 import 'package:extreme_chess_v2/src/global/services/barrel.dart';
 import 'package:extreme_chess_v2/src/global/ui/widgets/others/containers.dart';
-import 'package:extreme_chess_v2/src/home/views/base_animations.dart';
+import 'package:extreme_chess_v2/src/features/home/views/base_animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:async';

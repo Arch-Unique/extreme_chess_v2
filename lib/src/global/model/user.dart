@@ -1,22 +1,48 @@
 class User {
-  String firstName, lastName, email, image, id;
+  String username, email, image, id;
+  int elo, wins, draws, losses;
 
   User(
-      {this.firstName = "",
-      this.lastName = "",
+      {this.username = "",
       this.image = "",
       this.id = "",
+      this.elo = 0,
+      this.wins = 0,
+      this.draws = 0,
+      this.losses = 0,
       this.email = ""});
-
-  String get fullName => "$firstName $lastName";
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      firstName: json['firstName'] ?? "Fisayo",
-      lastName: json['lastName'] ?? "Fosudo",
-      image: json['image'] ?? "",
+      username: json['username'] ?? "ExtremePlayer",
+      image: json['user_image'] ?? "",
       id: json['id'] ?? "",
-      email: json['email'] ?? "fisayofosudo@gmail.com",
+      elo: json['elo'] ?? 0,
+      wins: json['wins'] ?? 0,
+      draws: json['draws'] ?? 0,
+      losses: json['losses'] ?? 0,
+      email: json['email'] ?? "",
     );
+  }
+}
+
+class AvailableUser extends User {
+  bool isAvailable;
+
+  AvailableUser({
+    super.username,
+    super.image,
+    super.id,
+    super.elo,
+    this.isAvailable = false,
+  });
+
+  factory AvailableUser.fromJson(Map<String, dynamic> json) {
+    return AvailableUser(
+        username: json['username'] ?? "ExtremePlayer",
+        image: json['image'] ?? "",
+        id: json['id'] ?? "",
+        elo: json['elo'] ?? 0,
+        isAvailable: json['isFree'] ?? false);
   }
 }

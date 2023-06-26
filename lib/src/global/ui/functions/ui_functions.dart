@@ -22,6 +22,17 @@ abstract class Ui {
         child: child,
       );
 
+  static EdgeInsets multEdgeInsets(
+      EdgeInsets edgeInsets, BuildContext context) {
+    double k = mult(context);
+    return EdgeInsets.fromLTRB(
+      edgeInsets.left * k,
+      edgeInsets.top * k,
+      edgeInsets.right * k,
+      edgeInsets.bottom * k,
+    );
+  }
+
   static BorderRadius circularRadius(double radius) => BorderRadius.all(
         Radius.circular(radius),
       );
@@ -36,6 +47,18 @@ abstract class Ui {
 
   static bool isSmallScreen(BuildContext context) {
     return width(context) < 330;
+  }
+
+  static double multWidth(BuildContext context) {
+    return width(context) / 762;
+  }
+
+  static double multHeight(BuildContext context) {
+    return height(context) / 392;
+  }
+
+  static double mult(BuildContext context) {
+    return multHeight(context) * multWidth(context);
   }
 
   static double height(BuildContext context) {

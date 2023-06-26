@@ -99,9 +99,15 @@ class _CurvedContainerState extends State<CurvedContainer>
             );
           },
           child: AnimatedContainer(
-            width: widget.width,
-            height: widget.height,
-            margin: widget.margin,
+            width: widget.width == null
+                ? null
+                : widget.width! * Ui.multWidth(context),
+            height: widget.height == null
+                ? null
+                : widget.height! * Ui.multHeight(context),
+            margin: widget.margin == null
+                ? null
+                : Ui.multEdgeInsets(widget.margin!, context),
             // onEnd: () {
             //   setState(() {
             //     scaleFactor = _sizeAnimation.value;
@@ -109,7 +115,9 @@ class _CurvedContainerState extends State<CurvedContainer>
             // },
 
             clipBehavior: widget.shouldClip ? Clip.hardEdge : Clip.none,
-            padding: widget.padding,
+            padding: widget.padding == null
+                ? null
+                : Ui.multEdgeInsets(widget.padding!, context),
             decoration: BoxDecoration(
                 borderRadius:
                     widget.borderRadius ?? Ui.circularRadius(widget.radius),

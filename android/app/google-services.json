@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "983373087656",
+    "project_id": "extreme-chess",
+    "storage_bucket": "extreme-chess.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983373087656:android:d63a14a52e018f45b1d39d",
+        "android_client_info": {
+          "package_name": "xyz.arcyuniq.extremechess.extreme_chess_v2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "983373087656-cp712rl2ij281ae18k6p94e5scadcb25.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "xyz.arcyuniq.extremechess.extreme_chess_v2",
+            "certificate_hash": "75b51fecf68e127fb3b5b14c1b2a784f6d143f12"
+          }
+        },
+        {
+          "client_id": "983373087656-qjdjr6jmp994tusqtnlm5tgrj97s0tqb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAL4_we0lWrpl8PJBo41e6hcBXO7feP8r0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "983373087656-fbtsgid5r7ih7s53kpb7sg1o4k0qs6dq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "983373087656-rgsf3igenhar0nmdjlped141t4c090om.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "xyz.arcyuniq.extremechess.extremeChessV2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -17,6 +17,8 @@ abstract class Assets {
 
   static const String chessboard = "assets/images/chessboard.png";
 
+  static const String world = "assets/images/world.webp";
+
   static const String winner = "assets/gifs/winner";
   static const String loser = "assets/gifs/loser";
   static const String draw = "assets/gifs/draw";

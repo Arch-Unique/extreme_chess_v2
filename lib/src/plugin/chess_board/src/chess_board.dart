@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 import 'package:extreme_chess_v2/src/global/ui/ui_barrel.dart';
-import 'package:extreme_chess_v2/src/home/controllers/app_controller.dart';
+import 'package:extreme_chess_v2/src/features/home/controllers/app_controller.dart';
 import 'package:extreme_chess_v2/src/src_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:chess/chess.dart' as chess;
@@ -145,19 +145,27 @@ class _ChessBoardState extends State<ChessBoard> {
                         var val = await _promotionDialog(context);
 
                         if (val != null) {
-                          widget.controller.makeMoveWithPromotion(
+                          final rs = widget.controller.makeMoveWithPromotion(
                             from: pieceMoveData.squareName,
                             to: squareName,
                             pieceToPromoteTo: val,
                           );
+                          if (!controller.isOfflineMode.value && rs) {
+                            controller.moveOnlineGame(
+                                "${pieceMoveData.squareName}$squareName$val");
+                          }
                         } else {
                           return;
                         }
                       } else {
-                        widget.controller.makeMove(
+                        final rs = widget.controller.makeMove(
                           from: pieceMoveData.squareName,
                           to: squareName,
                         );
+                        if (!controller.isOfflineMode.value && rs) {
+                          controller.moveOnlineGame(
+                              "${pieceMoveData.squareName}$squareName");
+                        }
                       }
                       if (game.turn != moveColor) {
                         widget.onMove?.call();
@@ -273,7 +281,7 @@ class _ChessBoardState extends State<ChessBoard> {
     controller.cancelTime();
     bool winnerIsUser = game.turn != controller.userColor.value;
     final user = winnerIsUser
-        ? controller.currentUser.value
+        ? controller.appRepo.appService.currentUser.value
         : controller.currentOpponent.value;
     String msg = "";
     String title = "";
@@ -284,7 +292,7 @@ class _ChessBoardState extends State<ChessBoard> {
         return "Congrats , You won";
       } else {
         controller.cgs.value = ChessGameState.loser;
-        return "${user.fullName} won, Try again next time ";
+        return "${user.username} won, Try again next time ";
       }
     }
 
@@ -311,6 +319,12 @@ class _ChessBoardState extends State<ChessBoard> {
         msg = getMsg(winnerIsUser);
       }
     }
+
+    if (controller.isOfflineMode.value) {
+      await controller.appRepo.appService.setUserWDL(
+          controller.selectedChessEngine.value.wdls, controller.cgs.value);
+    } else {}
+
     final meme = controller.getRandomMeme();
     return showDialog(
       context: context,
@@ -337,15 +351,11 @@ class _ChessBoardState extends State<ChessBoard> {
                       children: [
                         IconButton(
                             onPressed: () {
-                              try {
-                                Navigator.of(context).pop();
-                                Get.offAllNamed(AppRoutes.home);
-                              } catch (e) {
-                                print(e);
-                              }
+                              Ui.showInfo(
+                                  "Support for downloading of pgn coming soon");
                             },
                             icon: Icon(
-                              Icons.arrow_back_rounded,
+                              Icons.download_rounded,
                               color: AppColors.darkTextColor,
                             )),
                         Ui.boxWidth(12),
@@ -353,7 +363,12 @@ class _ChessBoardState extends State<ChessBoard> {
                             onPressed: () {
                               Navigator.of(context).pop();
                               widget.controller.resetBoard();
-                              controller.setTimeForPlayers(widget.controller);
+                              if (controller.isOfflineMode.value) {
+                                controller.setTimeForPlayers();
+                              } else {
+                                Ui.showInfo(
+                                    "Support for restarting games coming soon");
+                              }
                             },
                             icon: Icon(
                               Icons.restart_alt_rounded,
@@ -378,7 +393,7 @@ class _ChessBoardState extends State<ChessBoard> {
                     Ui.boxHeight(12),
                     Image.asset(
                       meme,
-                      width: 200,
+                      width: Ui.width(context),
                     )
                   ],
                 ),
