@@ -121,6 +121,9 @@ class AppService extends GetxService {
       MyPrefs.mpLoggedInURLPhoto: currentUser.value.image,
       MyPrefs.mpUserElo: currentUser.value.elo,
       MyPrefs.mpUserID: currentUser.value.id,
+      MyPrefs.mpUserWins: currentUser.value.wins,
+      MyPrefs.mpUserDraws: currentUser.value.draws,
+      MyPrefs.mpUserLosses: currentUser.value.losses,
       // MyPrefs.: currentUser.value.email,
     });
   }

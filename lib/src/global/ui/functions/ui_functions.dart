@@ -105,13 +105,16 @@ abstract class Ui {
   static showError(String message) {
     Get.closeAllSnackbars();
     Get.showSnackbar(GetSnackBar(
-      messageText: AppText.thin(message, fontSize: 12, color: AppColors.black),
+      messageText: AppText.thin(message, fontSize: 12, color: AppColors.white),
       boxShadows: [
         BoxShadow(
             offset: Offset(0, -4), blurRadius: 40, color: AppColors.accentColor)
       ],
       shouldIconPulse: true,
-      icon: AppIcon(Iconsax.danger),
+      icon: AppIcon(
+        Iconsax.danger,
+        color: AppColors.red,
+      ),
       backgroundColor: AppColors.accentColor,
       borderRadius: 16,
       duration: Duration(seconds: 3),

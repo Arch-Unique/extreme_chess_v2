@@ -28,6 +28,9 @@ class _SearchScreenState extends State<SearchScreen>
     // TODO: implement initState
     controller.waitForNewGame(onSuccess: () {
       Get.off(GameScreen());
+    }, onEnd: () {
+      Ui.showInfo("No players available, Try again later");
+      Get.off(PlayOnlineEngineScreen());
     });
     super.initState();
   }

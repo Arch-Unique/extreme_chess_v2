@@ -8,6 +8,7 @@ import 'package:extreme_chess_v2/src/global/model/user.dart';
 import 'package:extreme_chess_v2/src/global/services/barrel.dart';
 import 'package:extreme_chess_v2/src/global/ui/ui_barrel.dart';
 import 'package:extreme_chess_v2/src/src_barrel.dart';
+import 'package:extreme_chess_v2/src/utils/constants/prefs/prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:stockfish/stockfish.dart';
@@ -132,6 +133,7 @@ class AppController extends GetxController {
     if (isOfflineMode.value) {
       setTimeForPlayers();
     } else {
+      appRepo.appService.refreshUser();
       _endOnlineGame();
     }
   }
@@ -202,6 +204,7 @@ class AppController extends GetxController {
 //ONLINE
   setupSocketGame() {
     final socket = appRepo.apiService.socket;
+    socket.auth = {"token": appRepo.prefService.get(MyPrefs.mpUserJWT) ?? ""};
 
     socket.onAny((event, data) {
       print(event);
@@ -210,12 +213,12 @@ class AppController extends GetxController {
 
     socket.on("invalidAuth", (data) {
       Ui.showError("Invalid Authentication");
-      Get.offAll(AppRoutes.home);
+      Get.offAllNamed(AppRoutes.home);
     });
 
     socket.on("invalidGame", (data) {
       Ui.showError("Invalid Game");
-      Get.offAll(AppRoutes.home);
+      Get.offAllNamed(AppRoutes.home);
     });
 
     socket.on("timeout", (data) => Ui.showError("Timeout"));
@@ -280,6 +283,8 @@ class AppController extends GetxController {
     });
 
     socket.on("finished", (data) {});
+
+    socket.connect();
   }
 
   //ONLINE ACTIONS
@@ -296,6 +301,8 @@ class AppController extends GetxController {
   }
 
   void playOnlineEngine() {
+    hasAccepted.value = false;
+
     appRepo.apiService.socket.emit("playEngine", {
       "id": appRepo.appService.currentUser.value.id,
       "isWhite": userColor.value == Color.WHITE,

@@ -323,7 +323,9 @@ class _ChessBoardState extends State<ChessBoard> {
     if (controller.isOfflineMode.value) {
       await controller.appRepo.appService.setUserWDL(
           controller.selectedChessEngine.value.wdls, controller.cgs.value);
-    } else {}
+    } else {
+      await controller.appRepo.appService.refreshUser();
+    }
 
     final meme = controller.getRandomMeme();
     return showDialog(

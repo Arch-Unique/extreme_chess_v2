@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
+import 'package:extreme_chess_v2/src/features/home/screens/leaderboard_screen.dart';
 import 'package:extreme_chess_v2/src/features/home/screens/online/create_game_screen.dart';
 import 'package:extreme_chess_v2/src/features/home/screens/online/search_screen.dart';
 import 'package:extreme_chess_v2/src/global/controller/connection_controller.dart';
@@ -19,6 +20,7 @@ import 'package:extreme_chess_v2/src/features/home/screens/settings/mystats_page
 import 'package:extreme_chess_v2/src/features/home/views/base_animations.dart';
 import 'package:extreme_chess_v2/src/features/home/views/circle_button.dart';
 import 'package:extreme_chess_v2/src/features/home/views/custom_curve.dart';
+import 'package:extreme_chess_v2/src/utils/constants/prefs/prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -92,8 +94,8 @@ class _HomeHeaderState extends State<HomeHeader> {
       "Contributors",
       "Instructions",
       "About Us",
-      "Credits & Licenses",
-      "Unleash Your Generosity"
+      "Credits",
+      "Donate"
     ];
 
     return showDialog(
@@ -242,10 +244,13 @@ class _HomeActionState extends State<HomeAction>
       setState(() {
         isLoading = true;
       });
-      final appController = Get.find<AppController>();
+    }
+    final appController = Get.find<AppController>();
 
-      robots = await appController.appRepo.getRobots();
-      appController.onlineEngines = robots;
+    robots = await appController.appRepo.getRobots();
+    appController.onlineEngines = robots;
+
+    if (mounted) {
       setState(() {
         isLoading = false;
       });
@@ -280,7 +285,7 @@ class _HomeActionState extends State<HomeAction>
               BaseAnimationWidget.b2u(
                   value: _animation.value,
                   child: AppText.bold(widget._homeAction.title,
-                      fontSize: 30, color: AppColors.darkTextColor)),
+                      fontSize: 28, color: AppColors.darkTextColor)),
               Ui.boxHeight(24),
               tor,
             ],
@@ -719,11 +724,12 @@ class _HomeMenuState extends State<HomeMenu>
                             if (controller
                                     .appRepo.appService.currentUser.value.elo ==
                                 0) {
+                              print("i am here 00000");
                               Ui.showInfo(
                                   "You've not yet beaten any of the 3 engines");
                             } else {
                               //TODO
-                              controller.appRepo.apiService.socket.connect();
+
                               controller.setupSocketGame();
                               Get.to(CreateOnlineGameScreen());
                             }
@@ -731,9 +737,10 @@ class _HomeMenuState extends State<HomeMenu>
                             Ui.showError("Please Sign In to continue");
                           }
                         } else {
-                          controller.reInitStockFish();
-                          Ui.showInfo(
-                              "Coming Soon, Try beating any of the engines");
+                          Get.to(LeaderBoardScreen());
+                          // controller.reInitStockFish();
+                          // Ui.showInfo(
+                          //     "Coming Soon, Try beating any of the engines");
                         }
                       },
                       text: ha.btn,

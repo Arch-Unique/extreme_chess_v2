@@ -13,9 +13,9 @@ class Game {
 
   factory Game.fromJson(Map<String, dynamic> json) {
     return Game(
-        black: User.fromJson(json["black"]),
-        white: User.fromJson(json["white"]),
-        pgn: json["pgn"],
+        black: User.fromColorJson(json, "black"),
+        white: User.fromColorJson(json, "white"),
+        pgn: json["pgn"] ?? "",
         id: json["id"],
         wdl: json["wdl"]);
   }

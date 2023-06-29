@@ -84,4 +84,11 @@ class _CreateOnlineGameScreenState extends State<CreateOnlineGameScreen> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller.appRepo.apiService.socket.disconnect();
+    super.dispose();
+  }
 }

@@ -17,7 +17,7 @@ class _DonationScreenState extends State<DonationScreen> {
   @override
   Widget build(BuildContext context) {
     return SinglePageScaffold(
-      title: "Unleash your generosity",
+      title: "Donate",
       child: Ui.padding(
           child: Column(
         children: [],

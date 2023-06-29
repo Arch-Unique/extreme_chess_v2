@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '/src/app/app_barrel.dart';
 import '/src/global/ui/ui_barrel.dart';
 
-AppBar backAppBar(
+AppBar backAppBar(BuildContext context,
     {String? title,
     Widget? titleWidget,
     Color color = AppColors.darkTextColor,
@@ -17,12 +17,15 @@ AppBar backAppBar(
           : AppText.medium(title, fontSize: 24, color: color),
       elevation: 0,
       actions: trailing ?? [],
-      toolbarHeight: 104,
-      centerTitle: true,
-      leadingWidth: hasBack ? 104 : 28,
+      toolbarHeight: 104 * Ui.mult(context),
+      // centerTitle: true,
+      leadingWidth: hasBack ? 104 * Ui.mult(context) : 28,
       leading: hasBack
           ? Padding(
-              padding: EdgeInsets.only(left: 0, top: 24, bottom: 24),
+              padding: EdgeInsets.only(
+                  left: 0,
+                  top: 24 * Ui.mult(context),
+                  bottom: 24 * Ui.mult(context)),
               child: CircleButton.dark(
                   icon: Icons.arrow_back_ios_new_rounded,
                   onPressed: () async {

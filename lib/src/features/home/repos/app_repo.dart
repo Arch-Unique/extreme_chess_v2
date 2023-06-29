@@ -15,9 +15,8 @@ class AppRepo {
   final appService = Get.find<AppService>();
   final prefService = Get.find<MyPrefService>();
 
-  Future<List<app.User>> getLeaderboard({bool isRobot = true}) async {
-    final l = await apiService.get("${AppUrls.leaderboard}/$isRobot",
-        hasToken: false);
+  Future<List<app.User>> getLeaderboard() async {
+    final l = await apiService.get(AppUrls.leaderboard, hasToken: false);
     return apiService.getListOf<app.User>(l.data);
   }
 

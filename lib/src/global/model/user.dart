@@ -24,6 +24,19 @@ class User {
       email: json['email'] ?? "",
     );
   }
+
+  factory User.fromColorJson(Map<String, dynamic> json, String color) {
+    return User(
+      username: json['$color.username'] ?? "ExtremePlayer",
+      image: json['$color.user_image'] ?? "",
+      id: json['$color.id'] ?? "",
+      elo: json['$color.elo'] ?? 0,
+      wins: json['$color.wins'] ?? 0,
+      draws: json['$color.draws'] ?? 0,
+      losses: json['$color.losses'] ?? 0,
+      email: json['$color.email'] ?? "",
+    );
+  }
 }
 
 class AvailableUser extends User {

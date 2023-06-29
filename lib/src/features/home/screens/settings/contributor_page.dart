@@ -27,7 +27,7 @@ class ContributorScreen extends StatelessWidget {
                   ),
                 ),
                 title: AppText.bold("@Arch-Unique",
-                    fontSize: 24, color: AppColors.darkTextColor),
+                    fontSize: 20, color: AppColors.darkTextColor),
                 subtitle: AppText.thin(
                   "https://github.com/Arch-Unique",
                   color: AppColors.primaryColor,
@@ -39,6 +39,6 @@ class ContributorScreen extends StatelessWidget {
                 color: AppColors.disabledColor.withOpacity(0.5),
               );
             },
-            itemCount: 8));
+            itemCount: 2));
   }
 }

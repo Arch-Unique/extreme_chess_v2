@@ -25,6 +25,7 @@ class _PlayOnlineEngineScreenState extends State<PlayOnlineEngineScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    print(controller.hasAccepted);
     controller.hasAccepted.listen((p0) {
       if (p0) {
         Get.off(GameScreen());
@@ -54,8 +55,16 @@ class _PlayOnlineEngineScreenState extends State<PlayOnlineEngineScreen> {
                           barrierDismissible: true,
                           builder: (_) {
                             return AlertDialog(
-                              title: AppText.bold("Getting game ready"),
-                              content: CircularProgress(48),
+                              title: AppText.bold("Getting game ready",
+                                  color: AppColors.darkTextColor),
+                              content: SizedBox(
+                                  width: 49,
+                                  height: 49,
+                                  child: Column(
+                                    children: [
+                                      CircularProgress(48),
+                                    ],
+                                  )),
                             );
                           });
                     },
@@ -78,6 +87,10 @@ class _PlayOnlineEngineScreenState extends State<PlayOnlineEngineScreen> {
                         controller.onlineEngines[i].elo.toString(),
                         color: AppColors.darkTextColor.withOpacity(0.5)),
                     onTap: () {
+                      if (!controller.onlineEngines[i].isAvailable) {
+                        Ui.showError("Not available");
+                        return;
+                      }
                       controller.selectedOnlineEngine.value =
                           controller.onlineEngines[i];
                     },

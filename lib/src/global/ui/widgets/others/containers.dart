@@ -144,7 +144,7 @@ class SinglePageScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: title),
+      appBar: backAppBar(context, title: title),
       body: safeArea ? SafeArea(child: child!) : child,
     );
   }
