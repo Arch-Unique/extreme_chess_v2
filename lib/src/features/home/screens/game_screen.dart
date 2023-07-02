@@ -127,6 +127,7 @@ class _GameScreenState extends State<GameScreen>
                       color: AppColors.darkTextColor),
                   Ui.boxHeight(24),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       TextButton(
                           onPressed: () {

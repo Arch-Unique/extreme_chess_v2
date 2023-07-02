@@ -27,8 +27,6 @@ class ChessBoard extends StatefulWidget {
 
   final VoidCallback? onMove;
 
-  final List<BoardArrow> arrows;
-
   const ChessBoard({
     Key? key,
     required this.controller,
@@ -36,7 +34,6 @@ class ChessBoard extends StatefulWidget {
     this.enableUserMoves = true,
     this.boardOrientation = PlayerColor.white,
     this.onMove,
-    this.arrows = const [],
   }) : super(key: key);
 
   @override
@@ -110,7 +107,6 @@ class _ChessBoardState extends State<ChessBoard> {
 
                     var draggable = game.get(squareName) != null
                         ? Draggable<PieceMoveData>(
-                            child: piece,
                             feedback: game.get(squareName)?.color ==
                                     controller.userColor.value
                                 ? piece
@@ -121,6 +117,7 @@ class _ChessBoardState extends State<ChessBoard> {
                               // Clear moveData when dragging starts
                               moveData = null;
                             },
+                            child: piece,
                           )
                         : Container();
 
@@ -191,8 +188,8 @@ class _ChessBoardState extends State<ChessBoard> {
                       child: Container(
                         width: w,
                         height: w,
-                        child: dragTarget,
                         color: _getSquareColor(row, column),
+                        child: dragTarget,
                       ),
                     );
                   },
@@ -201,17 +198,21 @@ class _ChessBoardState extends State<ChessBoard> {
                   physics: NeverScrollableScrollPhysics(),
                 ),
               ),
-              if (widget.arrows.isNotEmpty)
-                IgnorePointer(
-                  child: AspectRatio(
-                    aspectRatio: 1.0,
-                    child: CustomPaint(
-                      child: Container(),
-                      painter:
-                          _ArrowPainter(widget.arrows, widget.boardOrientation),
-                    ),
+              Obx(() {
+                if (controller.opponentBoardArrow.value == null) {
+                  return SizedBox();
+                }
+                print(controller.opponentBoardArrow.value!);
+                print(widget.boardOrientation);
+                return IgnorePointer(
+                  child: CustomPaint(
+                    size: Size(Ui.width(context), Ui.width(context)),
+                    painter: _ArrowPainter(controller.opponentBoardArrow.value!,
+                        widget.boardOrientation),
+                    child: Container(),
                   ),
-                ),
+                );
+              })
             ],
           ),
         );
@@ -418,6 +419,8 @@ class BoardPiece extends StatelessWidget {
     required this.game,
   }) : super(key: key);
 
+  static const opponentColor = AppColors.primaryColor;
+
   @override
   Widget build(BuildContext context) {
     late Widget imageToDisplay;
@@ -451,32 +454,32 @@ class BoardPiece extends StatelessWidget {
         break;
       case "BP":
         imageToDisplay = BlackPawn(
-          fillColor: Color(0xFFFFD700),
+          fillColor: opponentColor,
         );
         break;
       case "BR":
         imageToDisplay = BlackRook(
-          fillColor: Color(0xFFFFD700),
+          fillColor: opponentColor,
         );
         break;
       case "BN":
         imageToDisplay = BlackKnight(
-          fillColor: Color(0xFFFFD700),
+          fillColor: opponentColor,
         );
         break;
       case "BB":
         imageToDisplay = BlackBishop(
-          fillColor: Color(0xFFFFD700),
+          fillColor: opponentColor,
         );
         break;
       case "BQ":
         imageToDisplay = BlackQueen(
-          fillColor: Color(0xFFFFD700),
+          fillColor: opponentColor,
         );
         break;
       case "BK":
         imageToDisplay = BlackKing(
-          fillColor: Color(0xFFFFD700),
+          fillColor: opponentColor,
         );
         break;
       default:
@@ -500,77 +503,74 @@ class PieceMoveData {
 }
 
 class _ArrowPainter extends CustomPainter {
-  List<BoardArrow> arrows;
+  BoardArrow arrow;
   PlayerColor boardOrientation;
 
-  _ArrowPainter(this.arrows, this.boardOrientation);
+  _ArrowPainter(this.arrow, this.boardOrientation);
 
   @override
   void paint(Canvas canvas, Size size) {
     var blockSize = size.width / 8;
     var halfBlockSize = size.width / 16;
+    var startFile = files.indexOf(arrow.from[0]);
+    var startRank = int.parse(arrow.from[1]) - 1;
+    var endFile = files.indexOf(arrow.to[0]);
+    var endRank = int.parse(arrow.to[1]) - 1;
 
-    for (var arrow in arrows) {
-      var startFile = files.indexOf(arrow.from[0]);
-      var startRank = int.parse(arrow.from[1]) - 1;
-      var endFile = files.indexOf(arrow.to[0]);
-      var endRank = int.parse(arrow.to[1]) - 1;
+    int effectiveRowStart = 0;
+    int effectiveColumnStart = 0;
+    int effectiveRowEnd = 0;
+    int effectiveColumnEnd = 0;
 
-      int effectiveRowStart = 0;
-      int effectiveColumnStart = 0;
-      int effectiveRowEnd = 0;
-      int effectiveColumnEnd = 0;
-
-      if (boardOrientation == PlayerColor.black) {
-        effectiveColumnStart = 7 - startFile;
-        effectiveColumnEnd = 7 - endFile;
-        effectiveRowStart = startRank;
-        effectiveRowEnd = endRank;
-      } else {
-        effectiveColumnStart = startFile;
-        effectiveColumnEnd = endFile;
-        effectiveRowStart = 7 - startRank;
-        effectiveRowEnd = 7 - endRank;
-      }
-
-      var startOffset = Offset(
-          ((effectiveColumnStart + 1) * blockSize) - halfBlockSize,
-          ((effectiveRowStart + 1) * blockSize) - halfBlockSize);
-      var endOffset = Offset(
-          ((effectiveColumnEnd + 1) * blockSize) - halfBlockSize,
-          ((effectiveRowEnd + 1) * blockSize) - halfBlockSize);
-
-      var yDist = 0.8 * (endOffset.dy - startOffset.dy);
-      var xDist = 0.8 * (endOffset.dx - startOffset.dx);
-
-      var paint = Paint()
-        ..strokeWidth = halfBlockSize * 0.8
-        ..color = arrow.color;
-
-      canvas.drawLine(startOffset,
-          Offset(startOffset.dx + xDist, startOffset.dy + yDist), paint);
-
-      var slope =
-          (endOffset.dy - startOffset.dy) / (endOffset.dx - startOffset.dx);
-
-      var newLineSlope = -1 / slope;
-
-      var points = _getNewPoints(
-          Offset(startOffset.dx + xDist, startOffset.dy + yDist),
-          newLineSlope,
-          halfBlockSize);
-      var newPoint1 = points[0];
-      var newPoint2 = points[1];
-
-      var path = Path();
-
-      path.moveTo(endOffset.dx, endOffset.dy);
-      path.lineTo(newPoint1.dx, newPoint1.dy);
-      path.lineTo(newPoint2.dx, newPoint2.dy);
-      path.close();
-
-      canvas.drawPath(path, paint);
+    if (boardOrientation == PlayerColor.black) {
+      effectiveColumnStart = 7 - startFile;
+      effectiveColumnEnd = 7 - endFile;
+      effectiveRowStart = startRank;
+      effectiveRowEnd = endRank;
+    } else {
+      effectiveColumnStart = startFile;
+      effectiveColumnEnd = endFile;
+      effectiveRowStart = 7 - startRank;
+      effectiveRowEnd = 7 - endRank;
     }
+
+    var startOffset = Offset(
+        ((effectiveColumnStart + 1) * blockSize) - halfBlockSize,
+        ((effectiveRowStart + 1) * blockSize) - halfBlockSize);
+    var endOffset = Offset(
+        ((effectiveColumnEnd + 1) * blockSize) - halfBlockSize,
+        ((effectiveRowEnd + 1) * blockSize) - halfBlockSize);
+
+    var yDist = 0.8 * (endOffset.dy - startOffset.dy);
+    var xDist = 0.8 * (endOffset.dx - startOffset.dx);
+
+    var paint = Paint()
+      ..strokeWidth = halfBlockSize * 0.8
+      ..color = arrow.color;
+
+    canvas.drawLine(startOffset,
+        Offset(startOffset.dx + xDist, startOffset.dy + yDist), paint);
+
+    var slope =
+        (endOffset.dy - startOffset.dy) / (endOffset.dx - startOffset.dx);
+
+    var newLineSlope = -1 / slope;
+
+    var points = _getNewPoints(
+        Offset(startOffset.dx + xDist, startOffset.dy + yDist),
+        newLineSlope,
+        halfBlockSize);
+    var newPoint1 = points[0];
+    var newPoint2 = points[1];
+
+    var path = Path();
+
+    path.moveTo(endOffset.dx, endOffset.dy);
+    path.lineTo(newPoint1.dx, newPoint1.dy);
+    path.lineTo(newPoint2.dx, newPoint2.dy);
+    path.close();
+
+    canvas.drawPath(path, paint);
   }
 
   List<Offset> _getNewPoints(Offset start, double slope, double length) {
@@ -591,6 +591,6 @@ class _ArrowPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_ArrowPainter oldDelegate) {
-    return arrows != oldDelegate.arrows;
+    return arrow != oldDelegate.arrow;
   }
 }

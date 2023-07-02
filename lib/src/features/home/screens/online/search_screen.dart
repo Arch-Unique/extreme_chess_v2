@@ -128,4 +128,10 @@ class _SearchScreenState extends State<SearchScreen>
       ),
     );
   }
+
+  @override
+  dispose() {
+    controller.cancelNewGame();
+    super.dispose();
+  }
 }

@@ -44,6 +44,7 @@ class AppController extends GetxController {
 
   //ONLINE GAME
   RxBool hasAccepted = false.obs;
+  Rx<BoardArrow?> opponentBoardArrow = Rx<BoardArrow?>(null);
 
   @override
   void onInit() {
@@ -66,7 +67,7 @@ class AppController extends GetxController {
               currentChessState.value = ChessEngineState.newgame;
             }
           } else if (event.startsWith("bestmove")) {
-            chessController.makeMoveUci(uci: event.split(" ")[1]);
+            opponentMove(event.split(" ")[1]);
           }
         });
         stockfish.stdin = "uci";
@@ -78,6 +79,14 @@ class AppController extends GetxController {
       _changeElo(p0.elo);
     });
     super.onInit();
+  }
+
+  opponentMove(String move) {
+    chessController.makeMoveUci(uci: move);
+    opponentBoardArrow.value = BoardArrow(
+        from: move.substring(0, 2),
+        to: move.substring(2, 4),
+        color: AppColors.primaryColor.withOpacity(0.3));
   }
 
   reInitStockFish() {
@@ -110,6 +119,7 @@ class AppController extends GetxController {
 
   setTimeForPlayers() {
     isTimeout.value = false;
+    opponentBoardArrow.value = null;
     // chessController = chessControllerv;
 
     wTime.value = selectedChessEngine.value.time;
@@ -129,6 +139,8 @@ class AppController extends GetxController {
 
   exitGame() {
     cancelTime();
+    opponentBoardArrow.value = null;
+
     chessController.resetBoard();
     if (isOfflineMode.value) {
       setTimeForPlayers();
@@ -230,10 +242,23 @@ class AppController extends GetxController {
     });
 
     socket.on("available", (data) {
+      // final ha = hasAccepted.listen((p0) {
+      //   if (p0) {
+      //     Get.to(GameScreen());
+
+      //   }
+      // });
+      StreamSubscription<bool>? ha;
       showDialog(
           context: Get.context!,
           barrierDismissible: false,
           builder: (_) {
+            ha = hasAccepted.listen((p0) {
+              if (p0) {
+                Get.to(GameScreen());
+                ha?.cancel(); // Cancel the listener when accepted
+              }
+            });
             return AlertDialog(
               backgroundColor: AppColors.black,
               title: AppText.bold("New Game"),
@@ -246,9 +271,6 @@ class AppController extends GetxController {
                       "player": appRepo.appService.currentUser.value.id,
                       "id": data,
                     });
-
-                    while (!hasAccepted.value) {}
-                    Get.to(GameScreen());
                   },
                   text: "Accept",
                 ),
@@ -270,7 +292,7 @@ class AppController extends GetxController {
     });
 
     socket.on("moveUser", (data) {
-      chessController.makeMoveUci(uci: data);
+      opponentMove(data);
     });
 
     socket.on("readyToPlay", (data) {
@@ -336,9 +358,17 @@ class AppController extends GetxController {
     });
   }
 
+  void cancelNewGame() {
+    appRepo.apiService.socket.emit("cancelGame", {
+      "id": currentGameID.value,
+    });
+  }
+
   void _startOnlineGame(data) {
     final game = Game.fromJson(data);
     currentGameID.value = game.id;
+    opponentBoardArrow.value = null;
+
     //setup game
     isTimeout.value = false;
     userColor.value = game.white.id == appRepo.appService.currentUser.value.id

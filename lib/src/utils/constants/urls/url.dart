@@ -15,7 +15,8 @@ abstract class AppUrls {
   static const String leaderboard = "/user/leaderboard";
   static const String history = "/user/history";
 
-  //game repo
+  //contributor repo
+  static const String contributor = "/contributor";
 
   //engine repo
   static const String engine = "/engine";

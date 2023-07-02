@@ -19,11 +19,28 @@ class CreditsScreen extends StatelessWidget {
       child: SingleChildScrollView(
           child: Column(
         children: [
-          headerTile(Iconsax.music, "Music", Assets.robot, []),
-          AppDivider(),
-          headerTile(Iconsax.picture_frame, "Icons", Assets.robot, []),
-          AppDivider(),
-          headerTile(Iconsax.image, "Images", Assets.robot, []),
+          headerTile(Iconsax.image, "Images & Icons", Assets.robot, [
+            CreditItem("Robot", "https://www.flaticon.com/free-icons/robot",
+                icon: Assets.robot),
+            CreditItem("Game", "https://www.flaticon.com/free-icons/gaming",
+                icon: Assets.console),
+            CreditItem(
+                "Leaderboard", "https://www.flaticon.com/free-icons/podium",
+                icon: Assets.podium),
+            CreditItem("Trophy", "https://www.flaticon.com/free-icons/trophy",
+                icon: Assets.trophy),
+            CreditItem("Chaos", "https://www.flaticon.com/free-icons/devil",
+                icon: Assets.easy),
+            CreditItem("Mayhem", "https://www.flaticon.com/free-icons/evil",
+                icon: Assets.medium),
+            CreditItem("Brutal", "https://www.flaticon.com/free-icons/devil",
+                icon: Assets.hard),
+            CreditItem("World",
+                "https://www.freepik.com/free-vector/continents-world-background_16351373.htm",
+                icon: Assets.world),
+            CreditItem("GIFS", "https://giphy.com",
+                icon: "${Assets.winner}1.webp"),
+          ]),
           AppDivider(),
           headerTile(Icons.computer, "Engines", Assets.robot, const [
             CreditItem(
@@ -67,7 +84,7 @@ class CreditsScreen extends StatelessWidget {
                     },
                     contentPadding: EdgeInsets.only(left: 32),
                     leading: Image.asset(
-                      subIcon,
+                      items[index].icon ?? subIcon,
                       height: 16,
                     ),
                     title: AppText.thin(items[index].title,
@@ -83,5 +100,6 @@ class CreditsScreen extends StatelessWidget {
 
 class CreditItem {
   final String title, url;
-  const CreditItem(this.title, this.url);
+  final dynamic icon;
+  const CreditItem(this.title, this.url, {this.icon});
 }

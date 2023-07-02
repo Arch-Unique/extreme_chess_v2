@@ -59,3 +59,19 @@ class AvailableUser extends User {
         isAvailable: json['isFree'] ?? false);
   }
 }
+
+class Contributor extends User {
+  String url;
+
+  Contributor({
+    super.username,
+    this.url = "",
+  });
+
+  factory Contributor.fromJson(Map<String, dynamic> json) {
+    return Contributor(
+      username: json['username'] ?? "ExtremePlayer",
+      url: json['url'] ?? "",
+    );
+  }
+}

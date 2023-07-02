@@ -30,7 +30,11 @@ class AppRepo {
     return apiService.getListOf<app.AvailableUser>(l.data);
   }
 
-  //set elo
+  //get all contributors
+  Future<List<app.Contributor>> getContributors() async {
+    final l = await apiService.get(AppUrls.contributor, hasToken: false);
+    return apiService.getListOf<app.Contributor>(l.data);
+  }
 
   loginSocial(ThirdPartyTypes tpt) async {
     String token = "";

@@ -129,6 +129,8 @@ class DioApiService extends GetxService implements ApiService {
           fg.add(User.fromJson(f) as T);
         } else if (T == Game) {
           fg.add(Game.fromJson(f) as T);
+        } else if (T == Contributor) {
+          fg.add(Contributor.fromJson(f) as T);
         }
       }
     }

@@ -74,8 +74,7 @@ class _GameHeaderProfileState extends State<GameHeaderProfile> {
                                 color: AppColors.white.withOpacity(0.5));
                           } else if (game.turn != controller.userColor.value &&
                               !widget.isUser) {
-                            return AppText.thin(
-                                "${controller.currentOpponent.value.username} is thinking...",
+                            return AppText.thin("Thinking...",
                                 fontSize: 14,
                                 alignment: TextAlign.center,
                                 color: AppColors.white.withOpacity(0.5));
@@ -105,17 +104,19 @@ class _GameHeaderProfileState extends State<GameHeaderProfile> {
             value: widget.animation.value,
             child: Transform.scale(
               scale: widget.animation.value,
-              child: widget.isUser
-                  ? AppIcon(
-                      Iconsax.profile_circle,
-                      color: AppColors.primaryColor,
-                      size: 24,
-                    )
-                  : UniversalImage(
-                      controller.currentOpponent.value.image,
-                      height: 24,
-                      width: 24,
-                    ),
+              child: CircleAvatar(
+                radius: 12,
+                backgroundColor: AppColors.white,
+                child: ClipOval(
+                  child: UniversalImage(
+                    widget.isUser
+                        ? controller.appRepo.appService.currentUser.value.image
+                        : controller.currentOpponent.value.image,
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+              ),
             ),
           ),
           Ui.boxWidth(8),
@@ -124,7 +125,7 @@ class _GameHeaderProfileState extends State<GameHeaderProfile> {
               child: AppText.thin(
                   widget.isUser
                       ? controller.appRepo.appService.currentUser.value.username
-                      : controller.currentOpponent.value.username,
+                      : controller.currentOpponent.value.username.capitalize!,
                   color: AppColors.darkTextColor)),
         ],
       ),
