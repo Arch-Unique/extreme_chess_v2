@@ -53,8 +53,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                   padding: EdgeInsets.all(4),
                   color: AppColors.darkTextColor,
                   onPressed: () {
-                    final controller = Get.find<AppController>();
-                    controller.stockfish.dispose();
+                    Get.to(MyStatsScreen());
                   },
                   child: Container(
                     decoration: BoxDecoration(
