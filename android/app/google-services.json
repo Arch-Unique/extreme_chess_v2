@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "983373087656-cp712rl2ij281ae18k6p94e5scadcb25.apps.googleusercontent.com",
+          "client_id": "983373087656-9olnvit13ip73om7f8pdaf2pjm98bu4q.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "xyz.arcyuniq.extremechess.extreme_chess_v2",
-            "certificate_hash": "75b51fecf68e127fb3b5b14c1b2a784f6d143f12"
+            "certificate_hash": "84b49be1f72c11546a07094968822c51f9886c41"
           }
         },
         {

@@ -6,6 +6,7 @@ abstract class Assets {
   static const String trophy = "assets/images/trophy.png";
   static const String blackChess = "assets/images/black.png";
   static const String whiteChess = "assets/images/white.png";
+  static const String playstore = "assets/images/google-play-badge.png";
 
   static const String easy = "assets/images/easy.png";
   static const String medium = "assets/images/medium.png";

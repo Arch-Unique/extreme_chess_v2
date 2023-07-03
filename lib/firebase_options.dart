@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '983373087656',
     projectId: 'extreme-chess',
     storageBucket: 'extreme-chess.appspot.com',
-    androidClientId: '983373087656-cp712rl2ij281ae18k6p94e5scadcb25.apps.googleusercontent.com',
+    androidClientId: '983373087656-9olnvit13ip73om7f8pdaf2pjm98bu4q.apps.googleusercontent.com',
     iosClientId: '983373087656-rgsf3igenhar0nmdjlped141t4c090om.apps.googleusercontent.com',
     iosBundleId: 'xyz.arcyuniq.extremechess.extremeChessV2',
   );
