@@ -667,7 +667,7 @@ Widget badge(
     ),
     child: Center(
         child: Icon(
-      icon ?? Iconsax.add,
+      icon ?? Iconsax.add_outline,
       color: AppColors.white,
     )),
   );
@@ -937,7 +937,7 @@ class UserProfilePic extends StatelessWidget {
               backgroundColor: Colors.white,
               radius: url.isEmpty ? 22 : 23,
               child: url.isEmpty
-                  ? Icon(Iconsax.profile_circle,
+                  ? Icon(Iconsax.profile_circle_outline,
                       size: 45, color: AppColors.disabledColor)
                   : CachedNetworkImage(
                       imageUrl: url,
@@ -957,7 +957,7 @@ class UserProfilePic extends StatelessWidget {
                           duration: Duration(seconds: 5),
                           builder: (context, value, child) {
                             return Center(
-                              child: Icon(Iconsax.profile_circle,
+                              child: Icon(Iconsax.profile_circle_outline,
                                   size: 44, color: value),
                             );
                           },
@@ -965,7 +965,7 @@ class UserProfilePic extends StatelessWidget {
                       },
                       errorWidget: (_, __, ___) {
                         return const Center(
-                            child: Icon(Iconsax.profile_circle,
+                            child: Icon(Iconsax.profile_circle_outline,
                                 size: 44, color: AppColors.red));
                       }))),
     );

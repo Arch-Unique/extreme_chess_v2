@@ -42,9 +42,9 @@ enum AuthMode {
 }
 
 enum ThirdPartyTypes {
-  facebook(Logos.facebook_f),
-  google(Logos.google),
-  apple(Logos.apple);
+  facebook(Brands.facebook_f),
+  google(Brands.google),
+  apple(Brands.apple_logo);
 
   final String logo;
   const ThirdPartyTypes(this.logo);

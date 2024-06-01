@@ -52,7 +52,7 @@ class _ContributorScreenState extends State<ContributorScreen> {
                     leading: CircleAvatar(
                       backgroundColor: AppColors.white,
                       child: AppIcon(
-                        Iconsax.programming_arrow,
+                        Iconsax.programming_arrow_outline,
                         color: AppColors.darkTextColor,
                       ),
                     ),

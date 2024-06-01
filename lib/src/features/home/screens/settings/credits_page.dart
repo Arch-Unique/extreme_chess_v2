@@ -19,7 +19,7 @@ class CreditsScreen extends StatelessWidget {
       child: SingleChildScrollView(
           child: Column(
         children: [
-          headerTile(Iconsax.image, "Images & Icons", Assets.robot, [
+          headerTile(Iconsax.image_outline, "Images & Icons", Assets.robot, [
             CreditItem("Robot", "https://www.flaticon.com/free-icons/robot",
                 icon: Assets.robot),
             CreditItem("Game", "https://www.flaticon.com/free-icons/gaming",

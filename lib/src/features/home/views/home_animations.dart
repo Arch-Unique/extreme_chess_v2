@@ -69,7 +69,7 @@ class _HomeHeaderState extends State<HomeHeader> {
               BaseAnimationWidget.u2b(
                 value: widget.animation.value,
                 child: CircleButton.dark(
-                    icon: Iconsax.menu,
+                    icon: Iconsax.menu_outline,
                     onPressed: () {
                       _showSettings();
                     }),
@@ -188,8 +188,8 @@ class _HomeHeaderState extends State<HomeHeader> {
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Logo(
-                                    Logos.google,
+                                  Brand(
+                                    Brands.google,
                                     size: 24,
                                   ),
                                   Ui.boxWidth(24),
@@ -797,7 +797,7 @@ class _AnimatedOpponentState extends State<AnimatedOpponent>
               radius: 32,
               backgroundColor: Colors.accents[_controller.value.floor()],
               child: AppIcon(
-                Iconsax.profile_circle,
+                Iconsax.profile_circle_outline,
                 size: 48,
               ),
             ),

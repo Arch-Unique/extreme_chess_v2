@@ -132,7 +132,7 @@ class CustomTextField extends StatelessWidget {
                               });
                             },
                             icon: AppIcon(
-                                isShow ? Iconsax.eye : Iconsax.eye_slash,
+                                isShow ? Iconsax.eye_outline : Iconsax.eye_slash_outline,
                                 color:
                                     // hasTouched
                                     //     ? AppColors.textColor

@@ -112,7 +112,7 @@ abstract class Ui {
       ],
       shouldIconPulse: true,
       icon: AppIcon(
-        Iconsax.danger,
+        Iconsax.danger_outline,
         color: AppColors.red,
       ),
       backgroundColor: AppColors.accentColor,

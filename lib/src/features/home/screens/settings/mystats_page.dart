@@ -38,7 +38,7 @@ class _MyStatsScreenState extends State<MyStatsScreen> {
                   child: controller
                           .appRepo.appService.currentUser.value.image.isEmpty
                       ? AppIcon(
-                          Iconsax.profile_circle,
+                          Iconsax.profile_circle_outline,
                           size: Ui.width(context) / 3,
                           color: AppColors.darkTextColor,
                         )

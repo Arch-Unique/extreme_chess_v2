@@ -143,7 +143,7 @@ class _GameHeaderProfileState extends State<GameHeaderProfile> {
           mainAxisSize: MainAxisSize.min,
           children: [
             AppIcon(
-              Iconsax.clock,
+              Iconsax.clock_outline,
               color: AppColors.white,
             ),
             Ui.boxWidth(8),

@@ -1,6 +1,6 @@
 abstract class AppUrls {
-  // static const String baseURL = 'https://extremechess.archyuniq.xyz/api';
-  static const String homeURL = 'http://www.archyuniq.xyz:3060';
+  static const String homeURL = 'https://extremechess.archyuniq.com';
+  // static const String homeURL = 'http://www.archyuniq.xyz:3060';
   static const String baseURL = '$homeURL/api';
 
   //auth repo

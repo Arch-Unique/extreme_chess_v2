@@ -21,7 +21,7 @@ class HeaderWidget extends StatelessWidget {
                 await onPressed();
               }),
           CircleButton.light(
-            icon: Iconsax.menu,
+            icon: Iconsax.menu_outline,
           )
         ],
       ),
