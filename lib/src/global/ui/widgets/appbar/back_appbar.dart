@@ -18,6 +18,7 @@ AppBar backAppBar(BuildContext context,
       elevation: 0,
       actions: trailing ?? [],
       toolbarHeight: 104 * Ui.mult(context),
+      forceMaterialTransparency: true,
       // centerTitle: true,
       leadingWidth: hasBack ? 104 * Ui.mult(context) : 28,
       leading: hasBack

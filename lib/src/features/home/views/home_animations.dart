@@ -85,7 +85,7 @@ class _HomeHeaderState extends State<HomeHeader> {
       MyStatsScreen(),
       ContributorScreen(),
       InstructionScreen(),
-      AboutScreen(),
+      // AboutScreen(),
       CreditsScreen(),
       DonationScreen()
     ];
@@ -93,7 +93,7 @@ class _HomeHeaderState extends State<HomeHeader> {
       "My Stats",
       "Contributors",
       "Instructions",
-      "About Us",
+      // "About Us",
       "Credits",
       "Donate"
     ];
@@ -399,6 +399,7 @@ class _HomeActionState extends State<HomeAction>
   engineItem(ChessEngines mode) {
     final controller = Get.find<AppController>();
     return Ui.padding(
+      padding: 16,
       child: Obx(() {
         return Badge(
           label: CircleAvatar(
@@ -434,7 +435,7 @@ class _HomeActionState extends State<HomeAction>
                 children: [
                   Image.asset(
                     mode.icon,
-                    width: 48,
+                    width: 56*Ui.mult(context),
                   ),
                   Ui.boxHeight(8),
                   AppText.medium(mode.title, color: AppColors.darkTextColor)
@@ -688,7 +689,7 @@ class _HomeMenuState extends State<HomeMenu>
             value: widget.animation.value,
             child: Obx(() {
               return CurvedContainer(
-                padding: EdgeInsets.all(24 * Ui.mult(context)),
+                padding: EdgeInsets.only(top: 24,bottom: 24,left: 12,right: 8),
                 onPressed: () {
                   controller.currentHomeAction.value = ha;
                   setState(() {});
@@ -707,12 +708,12 @@ class _HomeMenuState extends State<HomeMenu>
                       ha.image,
                       width: 24,
                     ),
-                    Ui.boxHeight(16),
+                    Ui.boxHeight(8),
                     AppText.thin(ha.desc,
                         color: ha == controller.currentHomeAction.value
                             ? AppColors.textColor
                             : AppColors.darkTextColor),
-                    Ui.boxHeight(16),
+                    Ui.boxHeight(8),
                     AppButton(
                       onPressed: () async {
                         if (ha.index == 0) {

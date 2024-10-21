@@ -56,6 +56,13 @@ class CreditsScreen extends StatelessWidget {
             CreditItem("Minic", "https://github.com/tryingsomestuff/Minic"),
             CreditItem("Velvet", "https://github.com/mhonert/velvet-chess"),
           ]),
+        AppDivider(),
+        headerTile(Iconsax.music_outline, "Music", Assets.robot, [
+          CreditItem("Black Knight By Rafael Kruz", "https://www.youtube.com/watch?v=763fSeRXODI",icon: Icons.music_note_rounded),
+          CreditItem("Eyes of Glory By Aakash Gandhi", "https://www.youtube.com/watch?v=yTc1Maol2ZA",icon: Icons.music_note_rounded),
+          CreditItem("Chariots of War By Aakash Gandhi", "https://www.youtube.com/watch?v=y8kqZ5rmIOA",icon: Icons.music_note_rounded),
+          CreditItem("Dragon Castle Epic Battle By Makai Symphony", "https://www.youtube.com/watch?v=82URdJXEZL0",icon: Icons.music_note_rounded),
+        ])
         ],
       )),
     );
@@ -83,7 +90,7 @@ class CreditsScreen extends StatelessWidget {
                       launchUrl(Uri.parse(items[index].url));
                     },
                     contentPadding: EdgeInsets.only(left: 32),
-                    leading: Image.asset(
+                    leading: (items[index].icon ?? subIcon) is IconData ? AppIcon(items[index].icon ?? subIcon,size: 16,): Image.asset(
                       items[index].icon ?? subIcon,
                       height: 16,
                     ),

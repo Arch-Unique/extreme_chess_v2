@@ -43,7 +43,7 @@ class CircleButton extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.disabledColor.withOpacity(0.1)),
         ),
-        padding: EdgeInsets.all(16 * Ui.mult(context)),
+        padding: EdgeInsets.all(16),
         child: Center(
           child: AppIcon(
             icon,

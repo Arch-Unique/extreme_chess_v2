@@ -4,6 +4,8 @@ import 'package:extreme_chess_v2/src/features/home/controllers/app_controller.da
 import 'package:extreme_chess_v2/src/src_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icons_plus/icons_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DonationScreen extends StatefulWidget {
   const DonationScreen({super.key});
@@ -18,9 +20,24 @@ class _DonationScreenState extends State<DonationScreen> {
   Widget build(BuildContext context) {
     return SinglePageScaffold(
       title: "Donate",
-      child: Ui.padding(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.all(24),
           child: Column(
-        children: [],
+        children: [
+          ListTile(
+                    dense: true,
+                    onTap: () {
+                      launchUrl(Uri.parse("https://buymeacoffee.com/ikennaidigo"));
+                    },
+                    contentPadding: EdgeInsets.only(left: 32),
+                    leading: AppIcon(Iconsax.coffee_outline),
+                    title: AppText.thin("Buy Me A Coffe",
+                        color: AppColors.darkTextColor.withOpacity(0.5)),
+                   
+                  ),
+                 AppDivider(),
+                 AppText.thin("Sponsors will show here")
+        ],
       )),
     );
   }

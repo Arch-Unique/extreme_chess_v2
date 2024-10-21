@@ -14,6 +14,7 @@ class MyPrefs {
   static const String mpUserWins = "mpUserWins";
   static const String mpUserDraws = "mpUserDraws";
   static const String mpUserLosses = "mpUserLosses";
+  static const String mpMusicOn = "mpMusicOn";
 
   // static void listenToStorageChanges(String k, void Function(dynamic) v) {
   //   _prefs.listenKey(k, (j) {

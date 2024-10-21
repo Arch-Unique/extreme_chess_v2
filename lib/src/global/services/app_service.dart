@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:extreme_chess_v2/src/global/model/user.dart';
 import 'package:extreme_chess_v2/src/global/services/barrel.dart';
 import 'package:extreme_chess_v2/src/plugin/jwt.dart';
@@ -14,8 +15,10 @@ class AppService extends GetxService {
   RxBool isLoggedIn = false.obs;
   final apiService = Get.find<DioApiService>();
   final prefService = Get.find<MyPrefService>();
+  final assetsAudioPlayer = AssetsAudioPlayer();
 
   initUserConfig() async {
+    _initMusic();
     await _hasOpened();
     await _setLoginStatus();
     if (isLoggedIn.value) {
@@ -134,5 +137,27 @@ class AppService extends GetxService {
       isLoggedIn.value = true;
     }
     isLoggedIn.value = prefService.get(MyPrefs.mpIsLoggedIn) ?? false;
+  }
+
+  toggleMusic() async {
+    assetsAudioPlayer.playOrPause();
+  }
+
+  _initMusic() async {
+    assetsAudioPlayer.open(
+        Playlist(
+            audios: List.generate(4, (i) => Audio("assets/audios/m$i.mp3"))),
+        forceOpen: false,
+        loopMode: LoopMode.playlist,
+        playInBackground: PlayInBackground.disabledRestoreOnForeground,
+        showNotification: false);
+    if (!assetsAudioPlayer.shuffle) {
+      assetsAudioPlayer.toggleShuffle();
+    }
+    assetsAudioPlayer.play();
+    assetsAudioPlayer.current.listen((playingAudio) {
+      print(playingAudio?.audio.audio.metas.title ?? "Unknown titole");
+      print(playingAudio?.audio.audio.metas.artist ?? "Unknown artist");
+    });
   }
 }

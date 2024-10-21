@@ -22,7 +22,7 @@ class _MyStatsScreenState extends State<MyStatsScreen> {
   Widget build(BuildContext context) {
     return SinglePageScaffold(
       title: "My Stats",
-      child: Padding(
+      child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
