@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:extreme_chess_v2/src/global/model/user.dart';
 import 'package:extreme_chess_v2/src/global/services/barrel.dart';
 import 'package:extreme_chess_v2/src/plugin/jwt.dart';
@@ -8,6 +7,7 @@ import 'package:extreme_chess_v2/src/src_barrel.dart';
 import 'package:extreme_chess_v2/src/utils/constants/prefs/prefs.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 
 class AppService extends GetxService {
   Rx<User> currentUser = User().obs;
@@ -15,7 +15,7 @@ class AppService extends GetxService {
   RxBool isLoggedIn = false.obs;
   final apiService = Get.find<DioApiService>();
   final prefService = Get.find<MyPrefService>();
-  final assetsAudioPlayer = AssetsAudioPlayer();
+  final assetsAudioPlayer = AudioPlayer();
 
   initUserConfig() async {
     _initMusic();
@@ -140,24 +140,19 @@ class AppService extends GetxService {
   }
 
   toggleMusic() async {
-    assetsAudioPlayer.playOrPause();
+   assetsAudioPlayer.playing ? await  assetsAudioPlayer.pause() : await assetsAudioPlayer.play();
   }
 
   _initMusic() async {
-    assetsAudioPlayer.open(
-        Playlist(
-            audios: List.generate(4, (i) => Audio("assets/audios/m$i.mp3"))),
-        forceOpen: false,
-        loopMode: LoopMode.playlist,
-        playInBackground: PlayInBackground.disabledRestoreOnForeground,
-        showNotification: false);
-    if (!assetsAudioPlayer.shuffle) {
-      assetsAudioPlayer.toggleShuffle();
-    }
-    assetsAudioPlayer.play();
-    assetsAudioPlayer.current.listen((playingAudio) {
-      print(playingAudio?.audio.audio.metas.title ?? "Unknown titole");
-      print(playingAudio?.audio.audio.metas.artist ?? "Unknown artist");
-    });
+    await assetsAudioPlayer.setAudioSource(ConcatenatingAudioSource(
+      useLazyPreparation: true,
+      shuffleOrder: DefaultShuffleOrder(),
+      children:
+          List.generate(4, (i) => AudioSource.asset("assets/audios/m${i+1}.mp3")),
+    ),preload: false);
+await assetsAudioPlayer.setLoopMode(LoopMode.all);        // Set playlist to loop (off|all|one)
+await assetsAudioPlayer.setShuffleModeEnabled(true);
+    await assetsAudioPlayer.play();
+   
   }
 }

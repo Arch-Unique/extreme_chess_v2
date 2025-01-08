@@ -30,7 +30,7 @@ class _DonationScreenState extends State<DonationScreen> {
                       launchUrl(Uri.parse("https://buymeacoffee.com/ikennaidigo"));
                     },
                     contentPadding: EdgeInsets.only(left: 32),
-                    leading: AppIcon(Iconsax.coffee_outline),
+                    leading: AppIcon(Iconsax.coffee_outline,color: AppColors.darkTextColor,),
                     title: AppText.thin("Buy Me A Coffe",
                         color: AppColors.darkTextColor.withOpacity(0.5)),
                    

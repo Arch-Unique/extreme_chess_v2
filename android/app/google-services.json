@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "983373087656",
     "project_id": "extreme-chess",
-    "storage_bucket": "extreme-chess.appspot.com"
+    "storage_bucket": "extreme-chess.firebasestorage.app"
   },
   "client": [
     {
@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "983373087656-9olnvit13ip73om7f8pdaf2pjm98bu4q.apps.googleusercontent.com",
+          "client_id": "983373087656-l7m3vfcukdf3ua2abte8r03ifu700rqc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "xyz.arcyuniq.extremechess.extreme_chess_v2",
-            "certificate_hash": "84b49be1f72c11546a07094968822c51f9886c41"
+            "certificate_hash": "4d1131605b6fa9f3186b60edbbc8766956bb43cf"
           }
         },
         {

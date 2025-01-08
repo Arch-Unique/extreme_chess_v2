@@ -208,7 +208,7 @@ class AppController extends GetxController {
   }
 
   String getRandomMeme() {
-    final l = List.generate(cgs.value.count, (index) => "${index}.webp");
+    final l = List.generate(cgs.value.count, (index) => "${index+1}.webp");
     final ls = Random().nextInt(cgs.value.count);
     return cgs.value.icon + l[ls];
   }

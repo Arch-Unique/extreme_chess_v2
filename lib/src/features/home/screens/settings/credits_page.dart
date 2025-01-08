@@ -90,7 +90,7 @@ class CreditsScreen extends StatelessWidget {
                       launchUrl(Uri.parse(items[index].url));
                     },
                     contentPadding: EdgeInsets.only(left: 32),
-                    leading: (items[index].icon ?? subIcon) is IconData ? AppIcon(items[index].icon ?? subIcon,size: 16,): Image.asset(
+                    leading: (items[index].icon ?? subIcon) is IconData ? AppIcon(items[index].icon ?? subIcon,color: AppColors.darkTextColor,size: 16,): Image.asset(
                       items[index].icon ?? subIcon,
                       height: 16,
                     ),

@@ -58,9 +58,9 @@ abstract class Ui {
   }
 
   static double mult(BuildContext context) {
-    if(GetPlatform.isIOS){
-      return 1;
-    }
+    // if(GetPlatform.isIOS){
+    //   return 1;
+    // }
     return multHeight(context) * multWidth(context);
   }
 
