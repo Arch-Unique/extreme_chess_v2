@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"android":{"default":{"projectId":"extreme-chess","appId":"1:983373087656:android:d63a14a52e018f45b1d39d","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"extreme-chess","configurations":{"android":"1:983373087656:android:d63a14a52e018f45b1d39d","ios":"1:983373087656:ios:cd58acbd20c6cf00b1d39d"}}}}}}

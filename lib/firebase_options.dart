@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:983373087656:android:d63a14a52e018f45b1d39d',
     messagingSenderId: '983373087656',
     projectId: 'extreme-chess',
-    storageBucket: 'extreme-chess.appspot.com',
+    storageBucket: 'extreme-chess.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -62,9 +62,10 @@ class DefaultFirebaseOptions {
     appId: '1:983373087656:ios:cd58acbd20c6cf00b1d39d',
     messagingSenderId: '983373087656',
     projectId: 'extreme-chess',
-    storageBucket: 'extreme-chess.appspot.com',
+    storageBucket: 'extreme-chess.firebasestorage.app',
     androidClientId: '983373087656-9olnvit13ip73om7f8pdaf2pjm98bu4q.apps.googleusercontent.com',
     iosClientId: '983373087656-rgsf3igenhar0nmdjlped141t4c090om.apps.googleusercontent.com',
     iosBundleId: 'xyz.arcyuniq.extremechess.extremeChessV2',
   );
+
 }
