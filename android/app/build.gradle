@@ -15,7 +15,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "xyz.arcyuniq.extremechess.extreme_chess_v2"
     compileSdk = 35
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "29.0.13599879"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
