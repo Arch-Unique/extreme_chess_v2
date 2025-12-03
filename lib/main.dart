@@ -13,7 +13,7 @@ import 'src/src_barrel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
+  await GetStorage.init("extremechess");
   await AppDependency.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
